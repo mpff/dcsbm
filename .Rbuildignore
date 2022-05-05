@@ -1,2 +1,4 @@
 ^dcsbm\.Rproj$
 ^\.Rproj\.user$
+^references
+^LICENSE\.md$

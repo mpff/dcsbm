@@ -1,11 +1,16 @@
 Package: dcsbm
-Title: What the Package Does (One Line, Title Case)
+Title: Degree Corrected Stochastic Block Models
 Version: 0.0.0.9000
-Authors@R: 
-    person("Manuel", "Pfeuffer", , "mnl.pfeuffer@gmail.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Authors@R: c(
+    person("Manuel", "Pfeuffer", role = c("aut", "cre"), 
+           email = "manuel.pfeuffer@esmt.org"),
+    person("Jan", "Nimczik", role = c("aut"), 
+           email = "jan.nimczik@esmt.org"))
+Description: Estimates a two-way degree corrected stochastic block model for 
+    directed weighted graphs, obtained e.g. from a data set of transmissions. 
+    See Peixoto (2014) <10.1103/PhysRevE.89.012804> for details on the 
+    inference algorithm.
+License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
