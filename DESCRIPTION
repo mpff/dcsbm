@@ -1,16 +1,18 @@
 Package: dcsbm
-Title: Degree Corrected Stochastic Block Models
 Version: 0.0.0.9000
+Title: Degree Corrected Stochastic Block Models
 Authors@R: c(
     person("Manuel", "Pfeuffer", role = c("aut", "cre"), 
            email = "manuel.pfeuffer@esmt.org"),
     person("Jan", "Nimczik", role = c("aut"), 
            email = "jan.nimczik@esmt.org"))
-Description: Estimates a two-way degree corrected stochastic block model for 
-    directed weighted graphs, obtained e.g. from a data set of transmissions. 
-    See Peixoto (2014) <10.1103/PhysRevE.89.012804> for details on the 
-    inference algorithm.
+Description: Provides methods for estimating a two-way degree corrected 
+    stochastic block model for directed, weighted graphs. Uses the 'igraph'
+    library <https://igraph.org> for graph handling. See Peixoto (2014) 
+    <10.1103/PhysRevE.89.012804> for details on the inference algorithm.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+Imports: 
+    igraph
