@@ -28,5 +28,22 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(dcsbm)
-## basic example code
+library(igraph)
+#> Warning: package 'igraph' was built under R version 4.1.3
+#> 
+#> Attaching package: 'igraph'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     decompose, spectrum
+#> The following object is masked from 'package:base':
+#> 
+#>     union
+
+# Generate graph by a planted partition model.
+partition <- sample(1:3, 30, replace = T)
+g <- sample_ppm(partition, 0.25, 0.01)
+V(g)$color <- partition
+plot(g)
 ```
+
+<img src="man/figures/README-example-1.png" width="100%" />

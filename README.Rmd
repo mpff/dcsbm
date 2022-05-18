@@ -39,5 +39,11 @@ This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
 library(dcsbm)
-## basic example code
+library(igraph)
+
+# Generate graph by a planted partition model.
+partition <- sample(1:3, 30, replace = T)
+g <- sample_ppm(partition, 0.25, 0.01)
+V(g)$color <- partition
+plot(g)
 ```
