@@ -4,6 +4,8 @@
 # dcsbm
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/mpff/dcsbm/workflows/R-CMD-check/badge.svg)](https://github.com/mpff/dcsbm/actions)
 <!-- badges: end -->
 
 The goal of dcsbm is to provide methods for estimating a two-way degree
