@@ -4,32 +4,37 @@
 \alias{sample_ppm}
 \title{Sample planted partition model}
 \usage{
-sample_ppm(partition, p, q)
+sample_ppm(n, p, q, block.sizes, directed = FALSE, loops = FALSE)
 }
 \arguments{
-\item{partition}{Vector of group memberships.}
+\item{n}{Number of vertices in the graph.}
 
-\item{p}{Edge probability between nodes of same group.}
+\item{p}{Probability of creating an edge between vertices of the same group.}
 
-\item{q}{Edge probability between nodes of different groups.}
+\item{q}{Probability of creating an edge between vertices of different groups.}
+
+\item{block.sizes}{Numeric vector giving the number of vertices in each group.
+The sum of the vector must match the number of vertices.}
+
+\item{directed}{Logical scalar, whether to generate a directed graph.}
+
+\item{loops}{Logical scalar, whether self-loops are allowed in the graph.}
 }
 \value{
 An igraph graph.
 }
 \description{
-Generate a random graph using the planted partition model
+Sampling from the planted partition model
 }
 \details{
-This function samples graphs from a stochastic block model by sampling
-each potential transmission with the probabilities given by \code{p} for
-in-group transmissions and \code{q} for between group transmissions and
-group membership given by the vector \code{partitions}.
+This function samples graphs from a stochastic block model by (doing the
+equivalent of) Bernoulli trials for each potential edge with the probabilities
+given by \code{p} for in-group edges and \code{q} for between group edges.
 }
 \examples{
 
 ## Three groups with only a few connection between groups
-partition <- sample(1:3, 50, replace = TRUE)
-g <- sample_ppm(partition, 0.3, 0.01)
+g <- sample_ppm(1000, p=0.3, q=0.01, block.sizes=c(100,600,300))
 g
 }
 \keyword{graphs,}

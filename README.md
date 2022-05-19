@@ -42,9 +42,8 @@ library(igraph)
 #>     union
 
 # Generate graph by a planted partition model.
-partition <- sample(1:3, 30, replace = T)
-g <- sample_ppm(partition, 0.25, 0.01)
-V(g)$color <- partition
+g <- sample_ppm(30, 0.3, 0.01, block.sizes=c(10,10,10), directed=T, loops=T)
+V(g)$color <- c(rep(1,10), rep(2,10), rep(3,10))
 plot(g)
 ```
 

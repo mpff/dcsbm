@@ -1,39 +1,41 @@
 #' Sample planted partition model
 #'
-#' Generate a random graph using the planted partition model
+#' Sampling from the planted partition model
 #'
-#' This function samples graphs from a stochastic block model by sampling
-#' each potential transmission with the probabilities given by \code{p} for
-#' in-group transmissions and \code{q} for between group transmissions and
-#' group membership given by the vector \code{partitions}.
+#' This function samples graphs from a stochastic block model by (doing the
+#' equivalent of) Bernoulli trials for each potential edge with the probabilities
+#' given by \code{p} for in-group edges and \code{q} for between group edges.
 #'
-#' @param partition Vector of group memberships.
-#' @param p Edge probability between nodes of same group.
-#' @param q Edge probability between nodes of different groups.
+#' @param n Number of vertices in the graph.
+#' @param p Probability of creating an edge between vertices of the same group.
+#' @param q Probability of creating an edge between vertices of different groups.
+#' @param block.sizes Numeric vector giving the number of vertices in each group.
+#' The sum of the vector must match the number of vertices.
+#' @param directed Logical scalar, whether to generate a directed graph.
+#' @param loops Logical scalar, whether self-loops are allowed in the graph.
 #' @return An igraph graph.
 #' @keywords graphs, sample, planted partition
 #' @examples
 #'
 #' ## Three groups with only a few connection between groups
-#' partition <- sample(1:3, 50, replace = TRUE)
-#' g <- sample_ppm(partition, 0.3, 0.01)
+#' g <- sample_ppm(1000, p=0.3, q=0.01, block.sizes=c(100,600,300))
 #' g
 #' @export
-#' @importFrom stats runif
 
-sample_ppm <- function (partition, p, q)
+sample_ppm <- function (n, p, q, block.sizes, directed = FALSE, loops = FALSE)
 {
-  partition <- structure(as.factor(partition))
+  n <- as.integer(n)
   p <- as.double(p)
   q <- as.double(q)
-  n <- length(partition)
-  nodes <- seq_len(n)
-  al <- lapply(nodes, function(i){
-    # Adapted from https://bldavies.com/blog/generating-random-graphs-communities
-    prob <- c(q, p)[1 + (partition[i] == partition)]
-    nodes[which(runif(n) < prob)]
-  })
-  res <- igraph::graph_from_adj_list(al)
-  res$name <- "Planted partition model"
+  block.sizes <- as.integer(block.sizes)
+  directed <- as.logical(directed)
+  loops <- as.logical(loops)
+  pm <- diag(p, length(block.sizes))
+  pm[upper.tri(pm) | lower.tri(pm)] <- q
+  res <- igraph::sample_sbm(n, pm, block.sizes, directed, loops)
+  if (igraph::igraph_opt("add.params")) {
+    res$name <- "Planted partition model"
+    res$loops <- loops
+  }
   res
 }
