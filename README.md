@@ -45,7 +45,7 @@ library(dcsbm)
 #>     union
 
 # Generate graph by a planted partition model.
-g <- sample_ppm(30, 0.3, 0.01, block.sizes=c(10,10,10), directed=TRUE, loops=TRUE)
+g <- sample_ppm(30, 0.3, 0.03, block.sizes=c(10,10,10), directed=TRUE, loops=TRUE)
 V(g)$color <- c(rep(1,10), rep(2,10), rep(3,10))
 plot(g)
 ```
