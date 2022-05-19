@@ -8,6 +8,8 @@
 [![R-CMD-check](https://github.com/mpff/dcsbm/workflows/R-CMD-check/badge.svg)](https://github.com/mpff/dcsbm/actions)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Codecov test
+coverage](https://codecov.io/gh/mpff/dcsbm/branch/main/graph/badge.svg)](https://app.codecov.io/gh/mpff/dcsbm?branch=main)
 <!-- badges: end -->
 
 The goal of dcsbm is to provide methods for estimating a two-way degree
@@ -48,4 +50,4 @@ V(g)$color <- c(rep(1,10), rep(2,10), rep(3,10))
 plot(g)
 ```
 
-<img src="man/figures/README-example-1.png" width="50%" />
+<img src="man/figures/README-example-1.png" width="66%" />
