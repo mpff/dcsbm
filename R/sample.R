@@ -21,6 +21,7 @@
 #' g <- sample_ppm(1000, p=0.3, q=0.01, block.sizes=c(100,600,300))
 #' g
 #' @export
+#' @importFrom igraph sample_sbm igraph_opt
 
 sample_ppm <- function (n, p, q, block.sizes, directed = FALSE, loops = FALSE)
 {
@@ -32,8 +33,8 @@ sample_ppm <- function (n, p, q, block.sizes, directed = FALSE, loops = FALSE)
   loops <- as.logical(loops)
   pm <- diag(p, length(block.sizes))
   pm[upper.tri(pm) | lower.tri(pm)] <- q
-  res <- igraph::sample_sbm(n, pm, block.sizes, directed, loops)
-  if (igraph::igraph_opt("add.params")) {
+  res <- sample_sbm(n, pm, block.sizes, directed, loops)
+  if (igraph_opt("add.params")) {
     res$name <- "Planted partition model"
     res$loops <- loops
   }

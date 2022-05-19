@@ -30,8 +30,7 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(dcsbm)
-library(igraph)
-#> Warning: package 'igraph' was built under R version 4.1.3
+#> Loading required package: igraph
 #> 
 #> Attaching package: 'igraph'
 #> The following objects are masked from 'package:stats':
@@ -42,7 +41,7 @@ library(igraph)
 #>     union
 
 # Generate graph by a planted partition model.
-g <- sample_ppm(30, 0.3, 0.01, block.sizes=c(10,10,10), directed=T, loops=T)
+g <- sample_ppm(30, 0.3, 0.01, block.sizes=c(10,10,10))
 V(g)$color <- c(rep(1,10), rep(2,10), rep(3,10))
 plot(g)
 ```
