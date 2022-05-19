@@ -48,4 +48,4 @@ V(g)$color <- c(rep(1,10), rep(2,10), rep(3,10))
 plot(g)
 ```
 
-<embed src="man/figures/README-example-1.pdf" width="66%" type="application/pdf" />
+<img src="man/figures/README-example-1.png" width="50%" />
