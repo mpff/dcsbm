@@ -43,6 +43,7 @@ sample_ppm <- function (n, p, q, block.sizes, n.trials = 1,
   pm[upper.tri(pm) | lower.tri(pm)] <- q
   res <- sample_sbm(n, pm, block.sizes, directed, loops)
   if(n.trials > 1){
+    # See https://stackoverflow.com/a/27766128 (Combine two graphs with weights)
     E(res)$weight <- 1
     for (i in seq(n.trials - 1)){
       resnew <- sample_sbm(n, pm, block.sizes, directed, loops)
