@@ -45,7 +45,7 @@ This is a basic example which shows you how to solve a common problem:
 library(dcsbm)
 
 # Generate graph by a planted partition model.
-g <- sample_ppm(30, p=0.3, q=0.03, block.sizes=c(10,10,10), directed=TRUE, loops=TRUE)
+g <- sample_ppm(30, p=0.1, q=0.01, block.sizes=c(10,10,10), n.trials = 3, directed=TRUE, loops=TRUE)
 V(g)$color <- c(rep(1,10), rep(2,10), rep(3,10))
 plot(g)
 ```

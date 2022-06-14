@@ -4,7 +4,7 @@
 \alias{sample_ppm}
 \title{Sample planted partition model}
 \usage{
-sample_ppm(n, p, q, block.sizes, directed = FALSE, loops = FALSE)
+sample_ppm(n, p, q, block.sizes, n.trials = 1, directed = FALSE, loops = FALSE)
 }
 \arguments{
 \item{n}{Number of vertices in the graph.}
@@ -15,6 +15,9 @@ sample_ppm(n, p, q, block.sizes, directed = FALSE, loops = FALSE)
 
 \item{block.sizes}{Numeric vector giving the number of vertices in each group.
 The sum of the vector must match the number of vertices.}
+
+\item{n.trials}{Number of repeated Bernoulli trials per edge. Graphs are
+weighted for \code{n.trials} greater than 1.}
 
 \item{directed}{Logical scalar, whether to generate a directed graph.}
 
@@ -28,14 +31,18 @@ Sampling from the planted partition model
 }
 \details{
 This function samples graphs from a stochastic block model by (doing the
-equivalent of) Bernoulli trials for each potential edge with the probabilities
-given by \code{p} for in-group edges and \code{q} for between group edges.
+equivalent of) \code{n.trial} Bernoulli trials for each potential edge with
+probabilities given by \code{p} for in-group edges and \code{q} for between
+group edges.
 }
 \examples{
 
 ## Three groups with only a few connection between groups
-g <- sample_ppm(1000, p=0.3, q=0.01, block.sizes=c(100,600,300))
-g
+g1 <- sample_ppm(1000, p=0.3, q=0.01, block.sizes=c(100,600,300))
+g1
+## Three groups with weighted connections.
+g2 <- sample_ppm(1000, p=0.1, q=0.003, block.sizes=c(100,600,300), n.trials=3)
+g2
 }
 \keyword{graphs,}
 \keyword{partition}
