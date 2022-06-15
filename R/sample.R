@@ -12,8 +12,8 @@
 #' @param q Probability of creating an edge between vertices of different groups.
 #' @param block.sizes Numeric vector giving the number of vertices in each group.
 #' The sum of the vector must match the number of vertices.
-#' @param n.trials Number of repeated Bernoulli trials per edge. Graphs are
-#' weighted for \code{n.trials} greater than 1.
+#' @param n.trials Number of repeated Bernoulli trials per edge. If
+#' \code{n.trials} is greater than 1, generates a weighted graph.
 #' @param directed Logical scalar, whether to generate a directed graph.
 #' @param loops Logical scalar, whether self-loops are allowed in the graph.
 #' @return An igraph graph.

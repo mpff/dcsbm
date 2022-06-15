@@ -16,8 +16,8 @@ sample_ppm(n, p, q, block.sizes, n.trials = 1, directed = FALSE, loops = FALSE)
 \item{block.sizes}{Numeric vector giving the number of vertices in each group.
 The sum of the vector must match the number of vertices.}
 
-\item{n.trials}{Number of repeated Bernoulli trials per edge. Graphs are
-weighted for \code{n.trials} greater than 1.}
+\item{n.trials}{Number of repeated Bernoulli trials per edge. If
+\code{n.trials} is greater than 1, generates a weighted graph.}
 
 \item{directed}{Logical scalar, whether to generate a directed graph.}
 
