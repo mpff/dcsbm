@@ -29,8 +29,8 @@
 #' @export
 #' @import igraph
 
-sample_ppm <- function (n, p, q, block.sizes, n.trials = 1,
-                        directed = FALSE, loops = FALSE)
+sample_ppm <- function (n, p, q, block.sizes,
+                        n.trials = 1, directed = FALSE, loops = FALSE)
 {
   n <- as.integer(n)
   p <- as.double(p)
@@ -54,13 +54,14 @@ sample_ppm <- function (n, p, q, block.sizes, n.trials = 1,
       E(res)$weight <- E(res)$weight_1 + E(res)$weight_2
       res <- remove.edge.attribute(res, "weight_1")
       res <- remove.edge.attribute(res, "weight_2")
-      # Todo: What about igraph_opt("add.params")?
-      res$name <- res$name_1
-      res <- remove.graph.attribute(res, "name_1")
-      res <- remove.graph.attribute(res, "name_2")
-      res$loops <- res$loops_1
-      res <- remove.graph.attribute(res, "loops_1")
-      res <- remove.graph.attribute(res, "loops_2")
+      if (igraph_opt("add.params")) {
+        res$name <- res$name_1
+        res <- remove.graph.attribute(res, "name_1")
+        res <- remove.graph.attribute(res, "name_2")
+        res$loops <- res$loops_1
+        res <- remove.graph.attribute(res, "loops_1")
+        res <- remove.graph.attribute(res, "loops_2")
+      }
     }
   }
   if (igraph_opt("add.params")) {
