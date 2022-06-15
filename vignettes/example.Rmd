@@ -1,0 +1,19 @@
+---
+title: "Example: estimation of a degree-corrected SBM over a job market dataset"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Example: estimation of a degree-corrected SBM over a job market dataset}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(dcsbm)
+```
