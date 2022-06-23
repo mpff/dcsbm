@@ -19,7 +19,6 @@
 #' @return An igraph graph.
 #' @keywords graphs, sample, planted partition
 #' @examples
-#'
 #' ## Three groups with only a few connection between groups
 #' g1 <- sample_ppm(1000, p=0.3, q=0.01, block.sizes=c(100,600,300))
 #' g1

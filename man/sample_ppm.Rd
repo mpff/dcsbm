@@ -36,7 +36,6 @@ probabilities given by \code{p} for in-group edges and \code{q} for between
 group edges.
 }
 \examples{
-
 ## Three groups with only a few connection between groups
 g1 <- sample_ppm(1000, p=0.3, q=0.01, block.sizes=c(100,600,300))
 g1
