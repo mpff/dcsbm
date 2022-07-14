@@ -20,7 +20,7 @@ test_that("Calculating node counts works", {
   expect_equal(n2, c(2,2))
 })
 
-test_that("Calculating binary entropy function works", {
-  H1 <- H_binary(ers, nr, ns)
-  expect_equal(1,1)
+test_that("Calculating binary entropy works", {
+  H1 <- H_binary(c(0, 0.5, 1))
+  expect_equal(H1, c(0, -log(0.5), 0))
 })
