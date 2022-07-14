@@ -15,7 +15,7 @@
 #' @examples
 #' ## Three groups with weighted connections.
 #' g1 <- sample_ppm(1000, p=0.1, q=0.003, block.sizes=c(100,600,300))
-#' model <- dcsbm(g1, 3)
+#' model <- sbm(g1, 3)
 #' @export
 #' @import igraph
 
