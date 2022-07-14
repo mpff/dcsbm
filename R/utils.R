@@ -36,12 +36,12 @@ block_node_counts <- function(partition) {
 
 #' Binary entropy function
 #'
-#' @param ers edge count between blocks r and s
-#' @param nr node count of block r
-#' @param ns node count of block s
+#' @param x Numeric, vector or matrix with numbers between 0 and 1.
 
-H_binary <- function (ers, nr, ns)
+H_binary <- function (x)
 {
-  NULL
+  stopifnot(0 <= x & x <= 1)
+  H <- - x * log(x) - (1 - x) * log(1 - x)
+  replace(H, is.na(H), 0)
 }
 

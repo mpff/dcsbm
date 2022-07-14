@@ -4,14 +4,10 @@
 \alias{H_binary}
 \title{Binary entropy function}
 \usage{
-H_binary(ers, nr, ns)
+H_binary(x)
 }
 \arguments{
-\item{ers}{edge count between blocks r and s}
-
-\item{nr}{node count of block r}
-
-\item{ns}{node count of block s}
+\item{x}{Numeric, vector or matrix with numbers between 0 and 1.}
 }
 \description{
 Binary entropy function
