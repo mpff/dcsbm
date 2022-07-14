@@ -12,5 +12,6 @@ block_edge_counts(graph, partition)
 \item{partition}{A vector of group id's for each node of graph.}
 }
 \description{
-Matrix of edge counts between blocks
+Entries r, s give nubmer of edges between nodes of blocks r and s
+or, for convenience twice that number if r = s.
 }

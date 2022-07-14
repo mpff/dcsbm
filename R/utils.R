@@ -1,5 +1,8 @@
 #' Matrix of edge counts between blocks
 #'
+#' Entries r, s give nubmer of edges between nodes of blocks r and s
+#' or, for convenience twice that number if r = s.
+#'
 #' @param graph An igraph graph.
 #' @param partition A vector of group id's for each node of graph.
 #' @import igraph
