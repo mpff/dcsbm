@@ -8,6 +8,11 @@ test_that("Calculating edge counts works", {
   p2 <- c(rep(1,2), rep(2,2))
   Ec2 <- block_edge_counts(g2, p2)
   expect_equal(Ec2, matrix(c(1,1,1,1), nrow=2))
+
+  g3 <- make_ring(6, directed=TRUE)
+  p3 <- c(rep(1,2), rep(2,2), rep(3,2))
+  Ec3 <- block_edge_counts(g3, p3)
+  expect_equal(Ec3, matrix(c(1,0,1,1,1,0,0,1,1), nrow=3))
 })
 
 test_that("Calculating node counts works", {

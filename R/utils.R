@@ -8,19 +8,10 @@
 #' @import igraph
 
 block_edge_counts <- function(graph, partition) {
-  c <- make_clusters(graph, partition, modularity = FALSE)
-  # Todo: Can optimize for undirected graph (only consider triangle matrix).
-  Ec <- lapply(seq_along(groups(c)), function(r){
-    sapply(seq_along(groups(c)), function(s){
-      es <- E(graph)[groups(c)[[r]] %->% groups(c)[[s]]]
-      if(r == s & !is.directed(graph)){
-        2 * length(es) # See SBM model in Piexoto (2014)
-      } else {
-        length(es)
-      }
-    })
-  })
-  do.call("rbind", Ec)
+  CG <- contract(graph, partition)
+  E <- as_adjacency_matrix(CG, sparse=FALSE)
+  if(!is.directed(graph)) diag(E) <- 2 * diag(E)
+  E
 }
 
 
