@@ -15,7 +15,6 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(microbenchmark)
 devtools::load_all()
 
 set.seed(2022)
