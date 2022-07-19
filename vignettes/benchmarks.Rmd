@@ -23,43 +23,79 @@ set.seed(2022)
 
 ## Microbenchmarks for Development
 
-### Scaling with network size
+### A. Scaling with network size
 
 ```{r}
-Nsizes <- c(10,100,1000)
-inputs <- lapply(Nsizes, function(dec) {
-  g <- sample_ppm(dec, 0.3, 0.01, c(0.3*dec, 0.5*dec, 0.2*dec))
-  p <- sample(c(rep(1,.3*dec), rep(2,.5*dec), rep(3,.2*dec)))
-  E <- block_edge_counts(g, p)
-  n <- block_node_counts(p)
-  list('g' = g, 'p' = p, 'E' = E, 'n' = n)
-})
-```
-
-#### Calculating node counts per block
-```{r}
-microbenchmark(
-  block_node_counts(inputs[[1]]$p),
-  block_node_counts(inputs[[2]]$p),
-  block_node_counts(inputs[[3]]$p)
+results <- bench::press(
+  Nsize = c(10,100,1000),
+  {
+    G <- sample_ppm(Nsize, 0.3, 0.01, c(0.3*Nsize, 0.5*Nsize, 0.2*Nsize))
+    p <- sample(c(rep(1,.3*Nsize), rep(2,.5*Nsize), rep(3,.2*Nsize)))
+    bench::mark(
+      min_iterations = 100,
+      node_count = block_node_counts(p),
+      edge_count = block_edge_counts(G, p),
+      check = FALSE
+    )
+  }
 )
-```
-
-#### Calculating edge counts between blocks
-```{r}
-microbenchmark(
-  block_edge_counts(inputs[[1]]$g, inputs[[1]]$p),
-  block_edge_counts(inputs[[2]]$g, inputs[[2]]$p),
-  block_edge_counts(inputs[[3]]$g, inputs[[3]]$p)
-)
+results
 ```
 
 
-#### Calculating traditional undirected entropy
+## B. StackOverflow Question
+
 ```{r}
-microbenchmark(
-  entropy_undirected_trad(inputs[[1]]$E, inputs[[1]]$n),
-  entropy_undirected_trad(inputs[[2]]$E, inputs[[2]]$n),
-  entropy_undirected_trad(inputs[[3]]$E, inputs[[3]]$n)
+library(igraph)
+
+# Set up toy graph and partition into two blocks
+G <- make_full_graph(20, directed=TRUE)
+m <- c(rep(1,10), rep(2,10))
+
+block_edge_counts <- function(G, m){
+  # Get list of vertices per group.
+  c <- make_clusters(G, m, modularity = FALSE)
+  # Calculate matrix of edge counts between blocks.
+  E <- sapply(seq_along(c), function(r){
+    sapply(seq_along(c), function(s){
+      # Iterate over all block pairs
+      el <- E(G)[c[[r]] %->% c[[s]]] # list of edges from block r to block s
+      length(el) # get number of edges
+    })
+  })
+}
+
+block_edge_counts(G, m)
+```
+```{r}
+block_edge_counts <- function(G, m){
+  c <- make_clusters(G, m, modularity = FALSE)
+  E <- sapply(seq_along(c), function(r){
+    sapply(seq_along(c), function(s){
+      el <- E(G)[c[[r]] %->% c[[s]]]
+      length(el)
+    })
+  })
+  t(E)
+}
+
+block_edge_counts2 <- function(graph, partition) {
+  CG <- contract(graph, partition)
+  E <- as_adjacency_matrix(CG, sparse=FALSE)
+  E
+}
+
+
+results <- bench::press(
+  Nsize = c(10,100,1000),
+  {
+    G <- erdos.renyi.game(Nsize, 0.2, directed=TRUE)
+    m <- c(rep(1,.5*Nsize), rep(2,.5*Nsize))
+    bench::mark(
+      block_edge_counts(G,m),
+      block_edge_counts2(G,m)
+      )
+  }
 )
+results
 ```
