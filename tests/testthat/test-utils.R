@@ -13,6 +13,11 @@ test_that("Calculating edge counts works", {
   p3 <- c(rep(1,2), rep(2,2), rep(3,2))
   Ec3 <- block_edge_counts(g3, p3)
   expect_equal(Ec3, matrix(c(1,0,1,1,1,0,0,1,1), nrow=3))
+
+  g4 <- make_empty_graph(4)
+  p4 <- c(rep(1,2), rep(2,2))
+  Ec4 <- block_edge_counts(g4, p4)
+  expect_equal(Ec4, matrix(c(0,0,0,0), nrow=2))
 })
 
 test_that("Calculating node counts works", {
