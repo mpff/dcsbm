@@ -7,8 +7,7 @@
 get_entropy(
   graph,
   partition,
-  degree_correction = c("none", "oneway", "twoways"),
-  directed = FALSE
+  degree_correction = c("none", "oneway", "twoways")
 )
 }
 \arguments{

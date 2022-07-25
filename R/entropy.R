@@ -23,15 +23,13 @@
 #' @import igraph
 
 get_entropy <- function (graph, partition,
-                         degree_correction = c("none", "oneway", "twoways"),
-                         directed = FALSE)
+                         degree_correction = c("none", "oneway", "twoways"))
 {
   stopifnot(is.igraph(graph))
-  block.sizes <- as.integer(partition)
+  partition <- as.integer(partition)
   stopifnot(length(graph) == length(partition))
   degree_correction <- match.arg(degree_correction)
-  directed <- as.logical(directed)
-  if(!directed){
+  if(!is.directed(graph)){
     if(degree_correction == "none") {
       E <- block_edge_counts(graph, partition)
       n <- block_node_counts(partition)

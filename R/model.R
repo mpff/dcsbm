@@ -19,14 +19,12 @@
 #' @export
 #' @import igraph
 
-sbm <- function (graph, n.blocks,
-                   degree_correction = c("none", "oneway", "twoways"),
-                   directed = FALSE, control = list())
+sbm <- function (graph, n.blocks, degree_correction = c("none", "oneway", "twoways"),
+                 control = list())
 {
   stopifnot(is.igraph(graph))
   n.blocks <- as.integer(n.blocks)
   degree_correction <- match.arg(degree_correction)
-  directed <- as.logical(directed)
   control <- NULL
   NULL
 }
