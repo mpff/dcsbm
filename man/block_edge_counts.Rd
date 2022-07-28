@@ -4,7 +4,7 @@
 \alias{block_edge_counts}
 \title{Matrix of edge counts between blocks}
 \usage{
-block_edge_counts(graph, partition)
+block_edge_counts(graph, partition, n.blocks = NULL)
 }
 \arguments{
 \item{graph}{An igraph graph.}

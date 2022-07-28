@@ -22,17 +22,18 @@
 #' @export
 #' @import igraph
 
-get_entropy <- function (graph, partition,
+get_entropy <- function (graph, partition, n.blocks = NULL,
                          degree_correction = c("none", "oneway", "twoways"))
 {
   stopifnot(is.igraph(graph))
   partition <- as.integer(partition)
-  stopifnot(length(graph) == length(partition))
+  if(!is.null(n.blocks)) n.blocks <- as.integer(n.blocks)
   degree_correction <- match.arg(degree_correction)
+  stopifnot(length(graph) == length(partition))
   if(!is.directed(graph)){
     if(degree_correction == "none") {
-      E <- block_edge_counts(graph, partition)
-      n <- block_node_counts(partition)
+      E <- block_edge_counts(graph, partition, n.blocks)
+      n <- block_node_counts(partition, n.blocks)
       S <- entropy_undirected_trad(E, n)
     }
     else stop("Entropy for these parameters not yet implemented.")

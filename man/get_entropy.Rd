@@ -7,6 +7,7 @@
 get_entropy(
   graph,
   partition,
+  n.blocks = NULL,
   degree_correction = c("none", "oneway", "twoways")
 )
 }
