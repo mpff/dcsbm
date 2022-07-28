@@ -54,3 +54,8 @@ H_binary <- function (x)
   replace(H, is.na(H), 0)
 }
 
+#' Safer resample
+#' @param x Numeric or vector from which to resample.
+#' @param ... other arguments of \code{sample}.
+
+resample <- function(x, ...) x[sample.int(length(x), ...)]
