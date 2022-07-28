@@ -56,6 +56,7 @@ get_entropy <- function (graph, partition, n.blocks = NULL,
 entropy_undirected_trad <- function (E, n)
 {
   Enn <- (E / n) %*% diag(1/n)
+  Enn <- replace(Enn, is.na(Enn), 0)
   Hmat <- H_binary(Enn)
   S <- .5 * matrix(n, nrow = 1) %*% Hmat %*% matrix(n)
   as.numeric(S)
