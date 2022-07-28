@@ -21,9 +21,6 @@ parameter per vertex, "twoways" for two parameters per vertex (input/output),
 "none" for no degree correction.}
 
 \item{control}{List of parameters for the inference algorithm.}
-
-\item{directed}{Logical scalar, Whether to use the directed or undirected SBM.
-Ignored for undirected graphs.}
 }
 \value{
 Todo

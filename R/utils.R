@@ -5,6 +5,8 @@
 #'
 #' @param graph An igraph graph.
 #' @param partition A vector of group id's for each node of graph.
+#' @param n.blocks The number of groups. Inferred from the
+#' number of individual group id's in partition by default.
 #' @import igraph
 
 block_edge_counts <- function(graph, partition, n.blocks = NULL) {

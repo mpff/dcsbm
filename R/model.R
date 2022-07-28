@@ -7,8 +7,6 @@
 #' @param degree_correction Type of degree correction to use. "oneway" for one
 #' parameter per vertex, "twoways" for two parameters per vertex (input/output),
 #' "none" for no degree correction.
-#' @param directed Logical scalar, Whether to use the directed or undirected SBM.
-#' Ignored for undirected graphs.
 #' @param control List of parameters for the inference algorithm.
 #' @return Todo
 #' @keywords graphs, inference, stochastic block model, degree correction

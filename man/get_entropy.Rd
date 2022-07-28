@@ -17,12 +17,12 @@ get_entropy(
 \item{partition}{Vector of integer values giving the block membership of each
 vertex}
 
+\item{n.blocks}{The number of groups. Inferred from the
+number of individual group id's in partition by default.}
+
 \item{degree_correction}{Type of degree correction to use. "oneway" for one
 parameter per vertex, "twoways" for two parameters per vertex (input/output),
 "none" for no degree correction.}
-
-\item{directed}{Logical scalar, Whether to use the directed or undirected
-entropy. Ignored for undirected graphs.}
 }
 \value{
 Entropy value (numeric) for the given graph and partition.
@@ -36,7 +36,7 @@ of degree correction. Can be used with directed and undirected graphs.
 g1 <- sample_ppm(100, 0.3, 0.03, block.sizes = c(30, 50, 20))
 ## random partition
 p1 <- sample(c(1,2,3), 100, replace = TRUE)
-get_entropy(g1, p1, degree_correction = "none", directed = FALSE)
+get_entropy(g1, p1)
 }
 \keyword{block}
 \keyword{correction}

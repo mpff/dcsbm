@@ -9,8 +9,8 @@
 #' @param degree_correction Type of degree correction to use. "oneway" for one
 #' parameter per vertex, "twoways" for two parameters per vertex (input/output),
 #' "none" for no degree correction.
-#' @param directed Logical scalar, Whether to use the directed or undirected
-#' entropy. Ignored for undirected graphs.
+#' @param n.blocks The number of groups. Inferred from the
+#' number of individual group id's in partition by default.
 #' @return Entropy value (numeric) for the given graph and partition.
 #' @keywords graphs, inference, stochastic block model, degree correction
 #' @examples
@@ -18,7 +18,7 @@
 #' g1 <- sample_ppm(100, 0.3, 0.03, block.sizes = c(30, 50, 20))
 #' ## random partition
 #' p1 <- sample(c(1,2,3), 100, replace = TRUE)
-#' get_entropy(g1, p1, degree_correction = "none", directed = FALSE)
+#' get_entropy(g1, p1)
 #' @export
 #' @import igraph
 
