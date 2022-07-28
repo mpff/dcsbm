@@ -15,7 +15,7 @@ mcmc_step <- function(vertex, graph, partition, B, e, eps = 1) {
   if(length(vertex_neighborhood) == 0) return(partition[vertex])  # if no neighbors, don't change.
   next_vertex <- resample(vertex_neighborhood, 1)
   t <- partition[next_vertex]
-  if(runif(1) > Rt(t, e, B, eps)){
+  if(stats::runif(1) > Rt(t, e, B, eps)){
     next_vertex_neighborhood <- neighbors(graph, next_vertex)
     s <- partition[resample(next_vertex_neighborhood, 1)]
   } else {
