@@ -4,13 +4,10 @@
 \alias{block_node_counts}
 \title{Node counts for blocks}
 \usage{
-block_node_counts(partition, n.blocks = NULL)
+block_node_counts(partition)
 }
 \arguments{
 \item{partition}{A vector of group id's for each node of graph.}
-
-\item{n.blocks}{The number of groups. Inferred from the
-number of individual group id's in partition by default.}
 }
 \description{
 Node counts for blocks

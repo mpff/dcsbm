@@ -7,7 +7,6 @@
 get_entropy(
   graph,
   partition,
-  n.blocks = NULL,
   degree_correction = c("none", "oneway", "twoways")
 )
 }
@@ -16,9 +15,6 @@ get_entropy(
 
 \item{partition}{Vector of integer values giving the block membership of each
 vertex}
-
-\item{n.blocks}{The number of groups. Inferred from the
-number of individual group id's in partition by default.}
 
 \item{degree_correction}{Type of degree correction to use. "oneway" for one
 parameter per vertex, "twoways" for two parameters per vertex (input/output),

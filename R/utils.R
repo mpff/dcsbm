@@ -5,18 +5,16 @@
 #'
 #' @param graph An igraph graph.
 #' @param partition A vector of group id's for each node of graph.
-#' @param n.blocks The number of groups. Inferred from the
-#' number of individual group id's in partition by default.
 #' @import igraph
 
-block_edge_counts <- function(graph, partition, n.blocks = NULL) {
+block_edge_counts <- function(graph, partition) {
   CG <- contract(graph, partition)
   E <- as_adjacency_matrix(CG, sparse=FALSE)
-  if(is.null(n.blocks)) n.blocks <- max(partition)
-  if(n.blocks != dim(E)[1]){
-    counts <- table(partition)
-    miss.blocks <- which(!1:n.blocks %in% dimnames(counts)$partition)
-    Enew <- diag(0, nrow = n.blocks)
+  blocks <- sort(unique(partition))
+  # Order bei number in partition behalten and insert empty rows/cols where needed
+  if(max(blocks) != dim(E)[1]){
+    miss.blocks <- which(!1:max(blocks) %in% blocks)
+    Enew <- diag(0, nrow = max(blocks))
     Enew[-miss.blocks, -miss.blocks] <- E
     E <- Enew
   }
@@ -28,17 +26,14 @@ block_edge_counts <- function(graph, partition, n.blocks = NULL) {
 #' Node counts for blocks
 #'
 #' @param partition A vector of group id's for each node of graph.
-#' @param n.blocks The number of groups. Inferred from the
-#' number of individual group id's in partition by default.
 #' @import igraph
 
-block_node_counts <- function(partition, n.blocks = NULL) {
+block_node_counts <- function(partition) {
   counts <- table(partition)
-  if(is.null(n.blocks)){
-    n.blocks <- max(names(counts))
-  }
-  if(n.blocks != dim(counts)){
-    miss.blocks <- which(!1:n.blocks %in% dimnames(counts)$partition)
+  blocks <- sort(unique(partition))
+  # Order bei number in partition behalten and insert empty rows/cols where needed
+  if(max(blocks) != length(blocks)){
+    miss.blocks <- which(!1:max(blocks) %in% blocks)
     for(block in miss.blocks) counts <- append(counts, 0, after = block - 1)
   }
   as.integer(counts)
@@ -61,3 +56,21 @@ H_binary <- function (x)
 #' @param ... other arguments of \code{sample}.
 
 resample <- function(x, ...) x[sample.int(length(x), ...)]
+
+
+#' Check partition
+#'
+#' Renumber partitions from 1 to the number of unique blocks (B).
+#' @param partition A vector of group id's for each node of graph.
+#' @return A vector of group id's going from 1 to B.
+
+check_partition <- function(partition)
+{
+  partition <- as.integer(partition)
+  blocks <- sort(unique(partition))
+  in.partition <- 1:max(blocks) %in% partition
+  if(!all(in.partition)){
+    for(i in 1:length(blocks)) partition[which(partition == blocks[i])] <- i
+  }
+  partition
+}

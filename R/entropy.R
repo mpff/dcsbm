@@ -9,8 +9,6 @@
 #' @param degree_correction Type of degree correction to use. "oneway" for one
 #' parameter per vertex, "twoways" for two parameters per vertex (input/output),
 #' "none" for no degree correction.
-#' @param n.blocks The number of groups. Inferred from the
-#' number of individual group id's in partition by default.
 #' @return Entropy value (numeric) for the given graph and partition.
 #' @keywords graphs, inference, stochastic block model, degree correction
 #' @examples
@@ -22,18 +20,24 @@
 #' @export
 #' @import igraph
 
-get_entropy <- function (graph, partition, n.blocks = NULL,
+get_entropy <- function (graph, partition,
                          degree_correction = c("none", "oneway", "twoways"))
 {
+  # Initial checks
   stopifnot(is.igraph(graph))
   partition <- as.integer(partition)
-  if(!is.null(n.blocks)) n.blocks <- as.integer(n.blocks)
   degree_correction <- match.arg(degree_correction)
   stopifnot(length(graph) == length(partition))
+  # Add vertices with degree zero to first group.
+  zero.vertices <- which(degree(graph) == 0)
+  partition[zero.vertices] <- 1
+  # Renumber blocks in partition.
+  partition <- check_partition(partition)
+  # Calculate Entropy
   if(!is.directed(graph)){
     if(degree_correction == "none") {
-      E <- block_edge_counts(graph, partition, n.blocks)
-      n <- block_node_counts(partition, n.blocks)
+      E <- block_edge_counts(graph, partition)
+      n <- block_node_counts(partition)
       S <- entropy_undirected_trad(E, n)
     }
     else stop("Entropy for these parameters not yet implemented.")
@@ -55,8 +59,7 @@ get_entropy <- function (graph, partition, n.blocks = NULL,
 
 entropy_undirected_trad <- function (E, n)
 {
-  Enn <- (E / n) %*% diag(1/n)
-  Enn <- replace(Enn, is.na(Enn), 0)
+  Enn <- (E / n) %*% diag(1/n, nrow = length(n))
   Hmat <- H_binary(Enn)
   S <- .5 * matrix(n, nrow = 1) %*% Hmat %*% matrix(n)
   as.numeric(S)
