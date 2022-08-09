@@ -50,3 +50,17 @@ test_that("Generating weighted parted partition models works", {
   E(g4x)$weight <- 3
   expect_equal(g4[sparse=FALSE], g4x[sparse=FALSE])
 })
+
+
+test_that("Generating parted partition models (Piexoto) works", {
+
+  # See https://github.com/igraph/rigraph/blob/dev/tests/testthat/test_sbm.game.R
+  g1 <- sample_ppm2(10, c = 0.5, k = 10, B = 2)
+  cg1 <- contract(g1, c(1,1,1,1,1,2,2,2,2,2))
+  adj1 <- as_adj(cg1, sparse = FALSE)
+  diag(adj1) <- 2 * diag(adj1)
+
+  expect_equal(degree(cg1), c(100, 100))
+  expect_equal(adj1, matrix(50, nrow=2, ncol=2))
+})
+

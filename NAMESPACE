@@ -2,5 +2,6 @@
 
 export(get_entropy)
 export(sample_ppm)
+export(sample_ppm2)
 export(sbm)
 import(igraph)
