@@ -25,14 +25,16 @@ set.seed(2022)
 results <- bench::press(
   Nsize = c(10, 100, 1000),
   {
-    G <- sample_ppm(Nsize, 0.1, 0.01, c(0.3*Nsize, 0.5*Nsize, 0.2*Nsize))
-    p <- c(rep(1, 0.3*Nsize), rep(2, 0.5*Nsize), rep(3, 0.2*Nsize))
+    G <- sample_ppm2(Nsize, c=0.9, k=3, B=3)
+    G <- simplify(G)
+    G <- delete.vertices(G, degree(G) == 0)
+    p <- sample(1:3, Nsize, replace = TRUE)
     bench::mark(
-      min_iterations = 50,
-      node_count = block_node_counts(p, 3),
-      edge_count = block_edge_counts(G, p, 3),
-      entropy = get_entropy(G, p, 3),
-      mcmc_sweep = mcmc_sweep(G, p, 3),
+      min_iterations = 10,
+      node_count = block_node_counts(p),
+      edge_count = block_edge_counts(G, p),
+      entropy = get_entropy(G, p),
+      mcmc_sweep = mcmc_single_sweep(G, p, 3),
       check = FALSE
     )
   }
@@ -41,44 +43,67 @@ results
 ```
 
 
-### B. Big Dataset (2.5 million vertices)
 
-#### B1. Calculate entropy / edge list
+### B. Entropy Convergence Tests
 
-```{r data, eval = FALSE, echo = FALSE}
-Nsize = 150000
-G <- sample_ppm(Nsize, 0.001, 0.0001, c(0.3*Nsize, 0.5*Nsize, 0.2*Nsize))
-p <- sample(c(rep(1,.3*Nsize), rep(2,.5*Nsize), rep(3,.2*Nsize)))
-start.time <- Sys.time()
-for(i in 1:5) S <- get_entropy(G, p)
-end.time <- Sys.time()
-time.taken <- end.time - start.time
-time.taken/5
-```
-
-
-### C. Entropy Convergence Test
+#### 1. MCMC sweeps
 
 ```{r, eval = FALSE, echo = FALSE}
-Nsize = 100
-Niter = 1500
-G <- sample_ppm(Nsize, 0.99, 0.01, c(0.3*Nsize, 0.5*Nsize, 0.2*Nsize))
-E <- length(E(G))
-p.true <- c(rep(1,.3*Nsize), rep(2,.5*Nsize), rep(3,.2*Nsize))
+# Initialize graph and a random starting partition
+Nsize = 60
+G <- sample_ppm2(Nsize, c = 0.9, k = 10, B = 3)
 p.start <- sample(1:3, Nsize, replace = TRUE)
+G <- simplify(G)
+E <- length(E(G))
+
+# Number of mcmcm sweeps
+Niter = 50
+
+# Bookkeeping
 p.new <- p.start
 p.best <- p.start
-S.iter <- rep(get_entropy(G, p.start)/E, Niter)
-pb = txtProgressBar(min = 0, max = Niter, initial = 1, style = 3) 
+dS.iter <- rep(0, Niter+1)
 start.time <- Sys.time()
-for (i in 2:Niter) {
-  p.new <- mcmc_sweep(G, p.best, 3)
-  S.iter[i] <- get_entropy(G, p.new, 3)/E
-  if(S.iter[i] == min(S.iter)) p.best <- p.new
-  setTxtProgressBar(pb,i)
+
+# Start mcmc sweeps
+pb = txtProgressBar(min = 0, max = Niter, initial = 0, style = 3) 
+for (i in 2:(Niter+1)) {
+  sweep_results <- mcmc_single_sweep(G, p.new, 3, eps = 0.1)
+  p.new <- sweep_results$new_partition
+  dS.iter[i] <- dS.iter[i-1] + sweep_results$entropy_delta/E
+  if(dS.iter[i] < min(dS.iter[1:(i-1)])) p.best <- p.new
+  setTxtProgressBar(pb,i-1)
 }
 close(pb)
+
 end.time <- Sys.time()
 time.taken <- end.time - start.time
-time.taken/(Niter-1)
+print(paste("Time per sweep =", time.taken/(Niter-1)))
+
+# Visualize start/end partition and entropy delta.
+plot(G, vertex.color = p.start, vertex.label = NA)
+plot(dS.iter, type = "line")
+plot(G, vertex.color = p.best, vertex.label = NA)
 ```
+
+
+#### 2. Agglomerative Merge
+
+```{r, eval = FALSE, echo = FALSE}
+G <- sample_ppm2(300, 0.9, 10, 3)
+G <- simplify(G)
+p.start <- sample(1:30, length(G), replace=TRUE)
+p.start <- check_partition(p.start)
+p.new <- p.start
+for (i in 1:(length(unique(p.start))-3)){
+   cb <- collapse_step(G, p.new)
+   print(paste(cb$g1, "->", cb$g2, "dS =", cb$dS))
+   p.new <- cb$partition
+   plot(G, vertex.color = p.new, vertex.label = NA)
+}
+```
+
+
+### C. Entropy Convergence Test 2
+
+
