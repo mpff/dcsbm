@@ -3,7 +3,13 @@ test_that("Calculating undirected traditional entropy works", {
   p1 <- c(rep(1,2), rep(2,2))
   S1 <- get_entropy(g1, p1)
   expect_equal(S1, 2 * sum(H_binary(c(0.5, 0.5))))
+
+  E2 <- matrix(c(6,0,0,0), nrow = 2)
+  n2 <- c(3, 0)
+  S2 <- entropy_undirected_trad(E2, n2)
+  expect_equal(S2, 0.5 * 9 * H_binary(6/9))
 })
+
 
 test_that("Calculating entropy does not fail, when groups missing in partition", {
   g1 <- make_ring(6, directed=FALSE)
@@ -22,4 +28,5 @@ test_that("Calculating entropy does not fail, when groups missing in partition",
   g3 <- add.edges(g3, c(2,3))
   p3 <- c(rep(1,3), rep(2,3))
   expect_error(get_entropy(g3, p3), NA)
+
 })

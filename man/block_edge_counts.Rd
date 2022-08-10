@@ -4,12 +4,15 @@
 \alias{block_edge_counts}
 \title{Matrix of edge counts between blocks}
 \usage{
-block_edge_counts(graph, partition)
+block_edge_counts(graph, partition, n.blocks = NULL)
 }
 \arguments{
 \item{graph}{An igraph graph.}
 
 \item{partition}{A vector of group id's for each node of graph.}
+
+\item{n.blocks}{The number of groups. Inferred from the
+number of individual group id's in partition by default.}
 }
 \description{
 Entries r, s give nubmer of edges between nodes of blocks r and s

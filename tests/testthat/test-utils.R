@@ -24,10 +24,10 @@ test_that("Calculating edge counts works", {
   Ec5 <- block_edge_counts(g5, p5)
   expect_equal(Ec5, diag(0, nrow=3))
 
-  g6 <- make_full_graph(4)
-  p6 <- c(rep(1,2), rep(3,2))
-  Ec6 <- block_edge_counts(g6, p6)
-  expect_equal(Ec6, matrix(c(2,0,4,0,0,0,4,0,2), nrow=3))
+  g6 <- make_empty_graph(4)
+  p6 <- c(rep(1,2), rep(2,2))
+  Ec6 <- block_edge_counts(g6, p6, n.blocks = 3)
+  expect_equal(Ec5, diag(0, nrow=3))
 })
 
 test_that("Calculating node counts works", {
@@ -37,8 +37,13 @@ test_that("Calculating node counts works", {
 
   p2 <- c(rep(1,2), rep(3,2))
   n2 <- block_node_counts(p2)
-  expect_equal(n2, c(2,0, 2))
+  expect_equal(n2, c(2,0,2))
+
+  p3 <- c(rep(1,2), rep(2,2))
+  n3 <- block_node_counts(p3, n.blocks = 3)
+  expect_equal(n3, c(2,2,0))
 })
+
 
 test_that("Calculating binary entropy works", {
   H1 <- H_binary(c(0, 0.5, 1))

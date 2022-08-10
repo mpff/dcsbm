@@ -5,16 +5,18 @@
 #'
 #' @param graph An igraph graph.
 #' @param partition A vector of group id's for each node of graph.
+#' @param n.blocks The number of groups. Inferred from the
+#' number of individual group id's in partition by default.
 #' @import igraph
 
-block_edge_counts <- function(graph, partition) {
+block_edge_counts <- function(graph, partition, n.blocks = NULL) {
   CG <- contract(graph, partition)
   E <- as_adjacency_matrix(CG, sparse=FALSE)
-  blocks <- sort(unique(partition))
-  # Order bei number in partition behalten and insert empty rows/cols where needed
-  if(max(blocks) != dim(E)[1]){
-    miss.blocks <- which(!1:max(blocks) %in% blocks)
-    Enew <- diag(0, nrow = max(blocks))
+  if(is.null(n.blocks)) n.blocks <- max(partition)
+  if(n.blocks != dim(E)[1]){
+    counts <- table(partition)
+    miss.blocks <- which(!1:n.blocks %in% dimnames(counts)$partition)
+    Enew <- diag(0, nrow = n.blocks)
     Enew[-miss.blocks, -miss.blocks] <- E
     E <- Enew
   }
@@ -26,14 +28,17 @@ block_edge_counts <- function(graph, partition) {
 #' Node counts for blocks
 #'
 #' @param partition A vector of group id's for each node of graph.
+#' @param n.blocks The number of groups. Inferred from the
+#' number of individual group id's in partition by default.
 #' @import igraph
 
-block_node_counts <- function(partition) {
+block_node_counts <- function(partition, n.blocks = NULL) {
   counts <- table(partition)
-  blocks <- sort(unique(partition))
-  # Order bei number in partition behalten and insert empty rows/cols where needed
-  if(max(blocks) != length(blocks)){
-    miss.blocks <- which(!1:max(blocks) %in% blocks)
+  if(is.null(n.blocks)){
+    n.blocks <- max(names(counts))
+  }
+  if(n.blocks != dim(counts)){
+    miss.blocks <- which(!1:n.blocks %in% dimnames(counts)$partition)
     for(block in miss.blocks) counts <- append(counts, 0, after = block - 1)
   }
   as.integer(counts)
@@ -50,6 +55,7 @@ H_binary <- function (x)
   H <- - x * log(x) - (1 - x) * log(1 - x)
   replace(H, is.na(H), 0)
 }
+
 
 #' Safer resample
 #' @param x Numeric or vector from which to resample.
