@@ -10,17 +10,24 @@
 #' @import igraph
 
 block_edge_counts <- function(graph, partition, n.blocks = NULL) {
+
   CG <- contract(graph, partition)
   E <- as_adjacency_matrix(CG, sparse=FALSE)
-  if(is.null(n.blocks)) n.blocks <- max(partition)
-  if(n.blocks != dim(E)[1]){
-    counts <- table(partition)
-    miss.blocks <- which(!1:n.blocks %in% dimnames(counts)$partition)
-    Enew <- diag(0, nrow = n.blocks)
-    Enew[-miss.blocks, -miss.blocks] <- E
-    E <- Enew
+
+  # Add blocks that are currently not represented in partition.
+  if ( !is.null(n.blocks) ) {
+    if( dim(E)[1] < n.blocks ){
+      miss.blocks <- (dim(E)[1]+1):n.blocks
+      Enew <- diag(0, nrow = n.blocks)
+      Enew[-miss.blocks, -miss.blocks] <- E
+      E <- Enew
+    }
   }
+
+  # Count incoming and outgoing edges on diagonal
   if(!is.directed(graph)) diag(E) <- 2 * diag(E)
+
+  # Return
   E
 }
 

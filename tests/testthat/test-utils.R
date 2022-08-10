@@ -28,6 +28,11 @@ test_that("Calculating edge counts works", {
   p6 <- c(rep(1,2), rep(2,2))
   Ec6 <- block_edge_counts(g6, p6, n.blocks = 3)
   expect_equal(Ec5, diag(0, nrow=3))
+
+  # Manual example
+  g7 <- make_full_graph(4)
+  p7 <- c(3, 3, 3, 1)
+  expect_error(block_edge_counts(g7, p7, n.blocks = 4), NA)
 })
 
 test_that("Calculating node counts works", {
