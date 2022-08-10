@@ -7,168 +7,193 @@
 #' @param graph An igraph graph.
 #' @param partition Vector of integer values giving the block membership of each
 #' vertex
+#' @param B Number of blocks.
 #' @param eps (optional) A number giving the ...
+#' @param beta (optional) A number giving the greediness of the moves.
 #' @return A new partition given as a vector of integer values.
 #' @export
 #' @import igraph
 
-mcmc_sweep <- function(graph, partition, B = NULL, eps = 1, beta = 1)
+mcmc_single_sweep <- function(G, p, B, eps = 0.1, beta = 1)
 {
   # Initial checks
-  stopifnot(is.igraph(graph))
-  partition <- as.integer(partition)
-  # Remove vertices with no connections, Rename partition
-  zero.vertices <- which(degree(graph) == 0)
-  # Renumber blocks in partition.
-  partition <- check_partition(partition)
-  # Final checks
-  stopifnot(length(graph) == length(partition))
-  if(length(zero.vertices) == length(partition)) return(rep.int(1, length(partition)))
-  # Get parameters
-  E <- block_edge_counts(graph, partition)
-  n <- block_node_counts(partition)
-  PE <- edge_probs(E)
-  Pr <- random_probs(E, eps)
-  if(!is.null(B)){
-    B <- as.integer(B)
-  } else {
-    B <- length(Pr)
-  }
-  block.edges <- block_edge_list(G, partition)
-  # Get sweep order
-  v.random <- sample(V(graph))
-  if(length(zero.vertices) > 0) v.random <- v.random[-which(v.random %in% zero.vertices)]
-  S.start <- entropy_undirected_trad(E, n)
-  for(vertex in v.random){
-    #move.proposal <- mcmc_step(vertex, graph, partition, PE, Pr, B, eps)
-    move.proposal <- mcmc_step3(vertex, graph, partition, block.edges, Pr, B, eps)
-    if(move.proposal == partition[vertex]) next()
-    S.new <-
-    block.edges <- update_block_edge_list(block.edges, vertex, graph, move.proposal, partition[vertex])
+  stopifnot(is.igraph(G))
+  stopifnot(is.simple(G))
+  stopifnot(all(degree(G) > 0))
 
-    # Update partition
-    partition[vertex] <- move.proposal
-    partition <- check_partition(partition)
-    #E <- block_edge_counts(graph, partition)
-    #PE <- edge_probs(E)
-    #Pr <- random_probs(E, eps)
-    Pr <- eps * B / (sapply(block.edges, length) + eps * B)
+  B <- as.integer(B)
+  p <- as.integer(p)
+
+  # Book keeper variables for this sweeps stats
+  entropy_delta <- 0
+  old_entropy <- get_entropy(G, p)
+
+  # Keep a list of block adjacent edges
+  block.edges <- block_edge_list(G, p, B)
+
+  for(curr_v in sample(V(G))){
+
+    # Get a move proposal
+    proposed_new_block = propose_move(curr_v, G, p, block.edges, eps)
+    old_block = p[curr_v]
+
+    # If proposed block is the current block, we don't need to waste
+    # time checking because decision will always result in same state.
+    if (old_block == proposed_new_block) next
+
+    # Calculate acceptance probability based on posterior changes
+    proposal_results = get_proposal_results(curr_v, proposed_new_block,
+                                            old_entropy, G, p, block.edges,
+                                            eps, beta)
+
+    # Make movement decision
+    move_accepted = proposal_results$prob_to_accept > stats::runif(1)
+
+    if (move_accepted) {
+      p <- swap_blocks(p, curr_v, proposed_new_block)
+      entropy_delta <- entropy_delta + proposal_results$entropy_delta
+      old_entropy <- proposal_results$new_entropy
+      block.edges <- update_block_edge_list(block.edges, curr_v, G, proposed_new_block, old_block)
+    }
   }
-  #new.partition <- sapply(v.random, function(vertex) {
-  #  mcmc_step(vertex, graph, partition, PE, Pr, B, eps)
-  #})
-  #new.partition <- new.partition[order(v.random)]
-  if(length(zero.vertices) > 0) {
-    #partition[-zero.vertices] <- new.partition
-    partition[zero.vertices] <- 1  # sort zero nodes into group 1.
-  } #else {
-  #  partition <- new.partition
-  #}
-  partition
+  list("new_partition" = p, "entropy_delta" = entropy_delta, "new_entropy" = old_entropy)
 }
 
 
-#' A single MCMC step over one node
+
+#' A single move proposal during an MCMC sweep
 #'
-#' @param vertex A node in graph.
-#' @param graph An igraph graph.
-#' @param partition Vector of integer values giving the block membership of each
-#' vertex
-#' @param PE asdf
-#' @param Pr asdf
-#' @param B Number of groups to sample from
-#' @param eps (optional) A number giving the ...
-#' @return A new group membership for vertex.
-#' @import igraph
-
-mcmc_step <- function(vertex, graph, partition, PE, Pr, B, eps = 1) {
-  vertex_neighborhood <- neighbors(graph, vertex)
-  next_vertex <- resample(vertex_neighborhood, 1)
-  s <- partition[next_vertex]
-  if(stats::runif(1) > Pr[s]){
-    next_vertex_neighborhood <- neighbors(graph, next_vertex)
-    t <- partition[resample(next_vertex_neighborhood, 1)]
-  } else {
-    t <- sample(1:B, 1)
-  }
-  t
-}
-
-#' A single MCMC step over one node (alternative)
-#'
-#' @param vertex A node in graph.
-#' @param graph An igraph graph.
-#' @param partition Vector of integer values giving the block membership of each
-#' vertex
-#' @param PE asdf
-#' @param Pr asdf
-#' @param B Number of groups to sample from
-#' @param eps (optional) A number giving the ...
-#' @return A new group membership for vertex.
-#' @import igraph
-
-mcmc_step2 <- function(vertex, graph, partition, PE, Pr, B, eps = 1) {
-  vertex_neighborhood <- neighbors(graph, vertex)
-  next_vertex <- resample(vertex_neighborhood, 1)
-  s <- partition[next_vertex]
-  if(stats::runif(1) > Pr[s]){
-    t <- sample(1:length(Pr), 1, prob = PE[,s])
-  } else {
-    t <- sample(1:B, 1)
-  }
-  t
-}
-
-#' A single MCMC step over one node (alternative 3)
-#'
-#' @param vertex A node in graph.
-#' @param graph An igraph graph.
-#' @param partition Vector of integer values giving the block membership of each
+#' @param curr_v A node in graph.
+#' @param G An igraph graph.
+#' @param p Vector of integer values giving the block membership of each
 #' vertex
 #' @param block.edges asdf
-#' @param Pr asdf
-#' @param B Number of groups to sample from
 #' @param eps (optional) A number giving the ...
 #' @return A new group membership for vertex.
 #' @import igraph
 
-mcmc_step3 <- function(vertex, graph, partition, block.edges, Pr, B, eps = 1) {
-  vertex_neighborhood <- neighbors(graph, vertex)
+propose_move <- function(curr_v, G, p, block.edges, eps = 1) {
+
+  # Get block membership of a random neighbor
+  vertex_neighborhood <- neighbors(G, curr_v)
   next_vertex <- resample(vertex_neighborhood, 1)
-  s <- partition[next_vertex]
-  if(stats::runif(1) > Pr[s]){
-    random.edge.s <- sample(block.edges[[s]], 1)
-    g1 <- partition[head_of(G, random.edge.s)]
-    g2 <- partition[tail_of(G, random.edge.s)]
-    t <- ifelse(s != g1, g1, g2)
+  neighbor_block <- p[next_vertex]
+
+  # Decide if we are going to choose a random block for our node
+  ergo_amnt = eps * length(block.edges)
+  draw_from_neighbor = stats::runif(1) > ergo_amnt / (length(block.edges[[neighbor_block]]) + ergo_amnt)
+
+  # Draw from potential candidates
+  if (draw_from_neighbor) {
+    # Sample a random edge from all edges connected to neighbor block
+    random_edge_to_neighbor_block <- sample(block.edges[[neighbor_block]], 1)
+    g1 <- p[head_of(G, random_edge_to_neighbor_block)]
+    g2 <- p[tail_of(G, random_edge_to_neighbor_block)]
+    move_proposal <- ifelse(neighbor_block != g1, g1, g2)
   } else {
-    t <- sample(1:B, 1)
+    # Sample a random block from all blocks
+    move_proposal <- sample(1:length(block.edges), 1)
   }
-  t
+  move_proposal
 }
 
 
 
-#' The probability of sampling a fully random (or new) group in a single MCMC step
-#'
-#' @param E Block adjacency matrix
-#' @param eps (optional) A number giving the ...
-#' @return A vector of length B giving the above probability per group.
-#' @import igraph
+#' Calculate entropy delta of the SBM before and after the proposed move and
+#' the ratio of the probabilities of moving to the proposed block before the move and
+#' moving back to the original block after the move.
 
-random_probs <- function(E, eps = 1) {
-  e <- colSums(E)
-  eps * (nrow(E)+1) / (e + eps * (nrow(E)+1))
+get_proposal_results <- function(curr_v, proposed_new_block,
+                                 old_entropy, G, old_partition, block.edges,
+                                 eps = 0.1, beta = 1){
+
+  old_block <- old_partition[curr_v]
+
+  # No need to go on if we're "swapping" to the same group
+  if (proposed_new_block == old_block) return(list("entropy_delta" = 0,
+                                                   "prob_to_accept" = 1,
+                                                   "new_entropy" = old_entropy))
+
+  # Calcualte old entropy (speed this up!)
+  old_edge_matrix <- block_edge_counts(G, old_partition, n.blocks = length(block.edges))
+  old_node_counts <- block_node_counts(old_partition, n.blocks = length(block.edges))
+
+  # Get new partition
+  new_partition <- replace(old_partition, curr_v, proposed_new_block)
+
+  # Calculate new entropy (speed this up!)
+  new_edge_matrix <- block_edge_counts(G, new_partition, n.blocks = length(block.edges))
+  new_node_counts <- block_node_counts(new_partition, n.blocks = length(block.edges))
+  new_entropy <- entropy_undirected_trad(new_edge_matrix, new_node_counts)
+
+  entropy_delta <- new_entropy - old_entropy
+
+  # Calculate R_t (for all t)
+  new_block_edges <- update_block_edge_list(block.edges, curr_v, G, proposed_new_block, old_block)
+  new_edge_counts <- colSums(new_edge_matrix)
+  new_Rt <- eps * length(block.edges) / (new_edge_counts + eps * length(block.edges))
+
+  old_edge_counts <- colSums(old_edge_matrix)
+  old_Rt <- eps * length(block.edges) / (old_edge_counts + eps * length(block.edges))
+
+  # Calculate fraction of neighbors belonging to each block
+  vertex_neighborhood <- neighbors(G, curr_v)
+  vertex_neighborhood_block_memberships <- old_partition[vertex_neighborhood]
+  vertex_neighborhood_blocks <- sort(unique(vertex_neighborhood_block_memberships))
+  vertex_neighborhood_size <- length(vertex_neighborhood)
+
+  prob_return_to_old <- 0
+  prob_move_to_new <- 0
+
+  for(t in vertex_neighborhood_blocks){
+    pti <- sum(vertex_neighborhood_block_memberships == t)/vertex_neighborhood_size
+
+    # Calculated after move
+    prob_return_to_old <- prob_return_to_old + pti *
+      ( (1-new_Rt[t]) * new_edge_matrix[t,old_block] / new_edge_counts[t]  + new_Rt[t]/length(new_edge_counts))
+
+    # Calculated before move
+    prob_move_to_new <- prob_move_to_new + pti *
+      ( (1-old_Rt[t]) * old_edge_matrix[t,proposed_new_block] / old_edge_counts[t]  + old_Rt[t]/length(old_edge_counts))
+  }
+
+  prob_ratio <- prob_return_to_old/prob_move_to_new
+  prob_to_accept <- min(exp(- beta * entropy_delta) * prob_ratio, 1)
+
+  return(list("entropy_delta" = entropy_delta, "prob_to_accept" = prob_to_accept, "new_entropy" = new_entropy))
 }
 
 
-#' The probability of ...
-#'
-#' @param E Block adjacency matrix
-#' @return A B x B matrix with rows giving the edge probabilities per group.
 
-edge_probs <- function(E){
-  e <- colSums(E)
-  E %*% diag(1/e, nrow = nrow(E))
+
+#' Create list of edges per block
+
+block_edge_list <- function(G, p, B = NULL)
+{
+  if(is.null(B)) {
+    blocks <- order(unique(p))
+  } else {
+    blocks <- 1:B
+  }
+  lapply(blocks, function(b){
+    b.vertices <- V(G)[which(p == b)]
+    b.edge.ids <- lapply(incident_edges(G, b.vertices, mode = "all"), as_ids)
+    b.edge.ids <- unlist(b.edge.ids)
+    sort(unique(b.edge.ids))
+  })
 }
 
+
+update_block_edge_list <- function(block.edges, v, G, new.b, old.b)
+{
+  v.edges <- as_ids(incident(G, v, mode = "all"))
+  block.edges[[old.b]] <- setdiff(block.edges[[old.b]], v.edges)
+  block.edges[[new.b]] <- union(block.edges[[new.b]], v.edges)
+  block.edges
+}
+
+
+swap_blocks <- function(p, curr_v, proposed_new_block){
+  p[curr_v] <- proposed_new_block
+  p
+}
