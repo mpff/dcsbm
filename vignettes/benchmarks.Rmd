@@ -21,7 +21,7 @@ set.seed(2022)
 
 ### A. Scaling with network size
 
-```{r scaling}
+```{r, eval = FALSE, echo = FALSE}
 results <- bench::press(
   Nsize = c(10, 100, 1000),
   {
@@ -30,7 +30,7 @@ results <- bench::press(
     G <- delete.vertices(G, degree(G) == 0)
     p <- sample(1:3, Nsize, replace = TRUE)
     bench::mark(
-      min_iterations = 10,
+      min_iterations = 5,
       node_count = block_node_counts(p),
       edge_count = block_edge_counts(G, p),
       entropy = get_entropy(G, p),
@@ -52,58 +52,42 @@ results
 # Initialize graph and a random starting partition
 Nsize = 60
 G <- sample_ppm2(Nsize, c = 0.9, k = 10, B = 3)
-p.start <- sample(1:3, Nsize, replace = TRUE)
 G <- simplify(G)
-E <- length(E(G))
+G <- delete.vertices(G, degree(G) == 0)
 
 # Number of mcmcm sweeps
 Niter = 50
+start_partition <- sample(1:3, size = Nsize, replace = TRUE)
 
-# Bookkeeping
-p.new <- p.start
-p.best <- p.start
-dS.iter <- rep(0, Niter+1)
-start.time <- Sys.time()
-
-# Start mcmc sweeps
-pb = txtProgressBar(min = 0, max = Niter, initial = 0, style = 3) 
-for (i in 2:(Niter+1)) {
-  sweep_results <- mcmc_single_sweep(G, p.new, 3, eps = 0.1)
-  p.new <- sweep_results$new_partition
-  dS.iter[i] <- dS.iter[i-1] + sweep_results$entropy_delta/E
-  if(dS.iter[i] < min(dS.iter[1:(i-1)])) p.best <- p.new
-  setTxtProgressBar(pb,i-1)
-}
-close(pb)
-
-end.time <- Sys.time()
-time.taken <- end.time - start.time
-print(paste("Time per sweep =", time.taken/(Niter-1)))
+# Perform Niter mcmc sweeps
+result <- mcmc_sweep(G, start_partition, 3, n.sweeps = 50)
 
 # Visualize start/end partition and entropy delta.
-plot(G, vertex.color = p.start, vertex.label = NA)
-plot(dS.iter, type = "line")
-plot(G, vertex.color = p.best, vertex.label = NA)
+plot(G, vertex.color = start_partition, vertex.label = NA)
+plot(result$entropy_delta, type = "line")
+plot(G, vertex.color = result$best_partition, vertex.label = NA)
 ```
 
 
 #### 2. Agglomerative Merge
 
 ```{r, eval = FALSE, echo = FALSE}
-G <- sample_ppm2(300, 0.9, 10, 3)
+G <- sample_ppm2(300, 0.95, 10, 6)
 G <- simplify(G)
+E <- length(E(G))
 p.start <- sample(1:30, length(G), replace=TRUE)
 p.start <- check_partition(p.start)
 p.new <- p.start
-for (i in 1:(length(unique(p.start))-3)){
-   cb <- collapse_step(G, p.new)
-   print(paste(cb$g1, "->", cb$g2, "dS =", cb$dS))
-   p.new <- cb$partition
+dS <- c(0)
+dB <- c(max(p.new))
+while(max(p.new) > 1){
+   B.curr <- max(p.new)
+   n.merges <- B.curr - floor(B.curr/1.5)
+   cb <- collapse_step(G, p.new, n.merges = n.merges, n.sweeps = 2)
+   p.new <- cb$new_partition
+   dS <- append(dS, cb$entropy_delta)
+   dB <- append(dB, max(p.new))
    plot(G, vertex.color = p.new, vertex.label = NA)
 }
+plot(dB, dS, type = "line")
 ```
-
-
-### C. Entropy Convergence Test 2
-
-
