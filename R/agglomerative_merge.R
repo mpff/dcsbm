@@ -10,7 +10,7 @@ collapse_step <- function(graph, partition, n.merges = 1, n.moves = 10, n.sweeps
   B.start <- max(partition)
 
   if(B.start - n.merges < 1){
-    warning(paste("Cannot merge", B.start, "block(s)", n.moves, "time(s). Skipping merge."))
+    warning(paste("Cannot merge", B.start, "blocks", n.moves, "time(s). Skipping merge."))
     return(list("new_partition" = partition, "g1" = NA, "g2" = NA, "entropy_delta" = 0))
   }
 
