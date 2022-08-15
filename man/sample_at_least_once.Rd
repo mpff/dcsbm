@@ -15,6 +15,11 @@ sample_at_least_once(x, size, prob = NULL)
 \item{prob}{a vector of probability weights for obtaining the elements of the
 vector being sampled.}
 }
+\value{
+A vector of length \code{size} with elements drawn from \code{x} where
+every element of \code{x} occurs at least once if \code{size} is larger than
+\code{length(x)}.
+}
 \description{
 Sample at least once with replacement
 See https://stackoverflow.com/a/26350427/10042003.
