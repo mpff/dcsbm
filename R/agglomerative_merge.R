@@ -33,6 +33,13 @@ collapse_step <- function(graph, partition, n.merges = 1, n.moves = 10, n.sweeps
   # Start partition properties
   old_entropy <- get_entropy(graph, partition)
 
+  # Init Progressbar
+  pbmessage <- paste("  [", B.start, "->", B.start - n.merges, "blocks ]")
+  pbwidth <- getOption("width") - nchar(pbmessage) - 4
+  pb = txtProgressBar(min = 0, max = B.start * n.moves, width = pbwidth,
+                      initial = 0, style = 3)
+  cat(pbmessage)
+
   for (b in 1:B.start) {
     for (i in 1:n.moves) {
 
@@ -65,7 +72,9 @@ collapse_step <- function(graph, partition, n.merges = 1, n.moves = 10, n.sweeps
       merge.results[merge.idx,] <- c(b, proposed_merge, entropy_delta)
 
     }
+    setTxtProgressBar(pb, b * i)
   }
+  close(pb)
 
   # Clean up merge.results
   if(any(merge.results$dS == 0)) merge.results <- merge.results[-which(merge.results$dS == 0),]
