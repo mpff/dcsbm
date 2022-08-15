@@ -69,24 +69,46 @@ collapse_step <- function(graph, partition, n.merges = 1, n.moves = 10, n.sweeps
 
   # Clean up merge.results
   if(any(merge.results$dS == 0)) merge.results <- merge.results[-which(merge.results$dS == 0),]
-  merge.order <- order(merge.results$dS, decreasing = FALSE)
-  final.merge <- merge.results[merge.order,][1,]
+  merge_results_ordered <- merge.results[order(merge.results$dS, decreasing = FALSE),]
+
+  n.merged <- 0
+  new_partition <- partition
+
+  while (n.merged < n.merges) {
+    if (length(merge_results_ordered[1,]) == 0){
+      warning(paste("Ran out of unique blocks to merge. Skipping after", n.merged, "merge(s)."))
+      break
+    }
+
+    # Get best merge pair
+    best_merge_pair <- merge_results_ordered[1,]
+
+    # Update results list. Remove merges of same blocks.
+    merge_results_ordered <- merge_results_ordered[-1,]
+    filter_g1 <- (merge_results_ordered$g1 == best_merge_pair$g1 | merge_results_ordered$g2 == best_merge_pair$g1)
+    filter_g2 <- (merge_results_ordered$g1 == best_merge_pair$g2 | merge_results_ordered$g2 == best_merge_pair$g2)
+    merge_results_ordered <- merge_results_ordered[-(filter_g1|filter_g2),]
+
+    # Update new partition
+    new_partition <- replace(new_partition, new_partition == best_merge_pair$g1, best_merge_pair$g2)
+
+    n.merged <- n.merged + 1
+  }
 
   # Apply moves
-  new_partition <- replace(partition, partition == final.merge$g1, final.merge$g2)
   new_partition <- check_partition(new_partition)
-  new_entropy_delta <- final.merge$dS
+  new_entropy_delta <- get_entropy(graph, new_partition) - old_entropy
 
   # Perform mcmc sweeps to settle partition (costly)
   if(n.sweeps > 0) {
-    best_partition <- new_partition
     for (i in 1:n.sweeps) {
       sweep_results <- mcmc_single_sweep(graph, new_partition, B.start - 1)
       new_partition <- sweep_results$new_partition
-      new_entropy_delta <- new_entropy_delta - sweep_results$entropy_delta
+      new_entropy_delta <- new_entropy_delta + sweep_results$entropy_delta
     }
   }
 
-  list("new_partition" = new_partition, "g1" = final.merge$g1, "g2" = final.merge$g2,
-       "entropy_delta" = new_entropy_delta)
+  new_partition <- check_partition(new_partition)
+
+  list("new_partition" = new_partition, "entropy_delta" = new_entropy_delta)
 }
