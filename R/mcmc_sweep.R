@@ -1,3 +1,55 @@
+#' Run multiple MCMC sweep overs nodes
+#'
+#' Runs a n.sweeps MCMC sweep across all nodes (for algorithm details see Piexoto,
+#' 2018). Each node is given a chance to move blocks or stay in current block
+#' and all nodes are processed in random order for each sweep.
+#'
+#' @param graph An igraph graph.
+#' @param partition Vector of integer values giving the initial block membership
+#' of each vertex
+#' @param B Number of blocks.
+#' @param n.sweeps Number of sweeps to run.
+#' @param eps (optional) A number giving the ...
+#' @param beta (optional) A number giving the greediness of the moves.
+#' @return A new partition given as a vector of integer values.
+#' @export
+#' @import igraph
+
+mcmc_sweep <- function(G, p, B, n.sweeps = 1, eps = 0.1, beta = 1)
+{
+  # Initial checks
+  stopifnot(is.igraph(G))
+  stopifnot(is.simple(G))
+  stopifnot(all(degree(G) > 0))
+
+  B <- as.integer(B)
+  p <- as.integer(p)
+
+  old_entropy <- get_entropy(G, p)
+
+  # Bookkeper variables
+  entropy_delta <- rep(0, n.sweeps + 1)
+  new_partition <- p
+  best_partition <- p
+  best_entropy_delta <- 0
+  best_entropy <- old_entropy
+
+  for (i in 1:n.sweeps) {
+    sweep_results <- mcmc_single_sweep(G, new_partition, B, eps, beta)
+    entropy_delta[i+1] <- entropy_delta[i] + sweep_results$entropy_delta
+    new_partition <- sweep_results$new_partition
+    if (entropy_delta[i+1] < min(entropy_delta[1:i])) {
+      best_partition <- new_partition
+      best_entropy_delta <- entropy_delta[i+1]
+      best_entropy <- sweep_results$new_entropy
+    }
+  }
+  list("best_partition" = best_partition, "best_entropy_delta" = best_entropy_delta,
+       "best_entropy" = best_entropy, "new_partiton" = new_partition,
+       "entropy_delta" = entropy_delta)
+}
+
+
 #' Run a single MCMC sweep over nodes
 #'
 #' Runs a single MCMC sweep across all nodes (for algorithm details see Piexoto,

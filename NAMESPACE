@@ -2,6 +2,7 @@
 
 export(get_entropy)
 export(mcmc_single_sweep)
+export(mcmc_sweep)
 export(sample_ppm)
 export(sample_ppm2)
 export(sbm)
