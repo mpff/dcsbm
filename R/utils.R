@@ -68,7 +68,32 @@ H_binary <- function (x)
 #' @param x Numeric or vector from which to resample.
 #' @param ... other arguments of \code{sample}.
 
+
 resample <- function(x, ...) x[sample.int(length(x), ...)]
+
+#' Sample at least once with replacement
+#' See https://stackoverflow.com/a/26350427/10042003.
+#' @param x a numeric or vector from which to sample.
+#' @param size a non-negative integer giving the number of items to choose.
+#' @param prob a vector of probability weights for obtaining the elements of the
+#' vector being sampled.
+#' @value A vector of length \code{size} with elements drawn from \code{x} where
+#' every element of \code{x} occurs at least once if \code{size} is larger than
+#' \code{length(x)}.
+
+sample_at_least_once <- function(x, size, prob = NULL){
+  # Only consider unique items.
+  items <- unique(x)
+  if(length(items) > size){
+    stop("Not enough unique items in input to sample at least one of each.")
+  }
+
+  # Get values for vector - force each item in at least once
+  vals <- c(items, sample(items, size - length(items), replace = TRUE, prob = prob))
+
+  # Now shuffle them
+  sample(vals)
+}
 
 
 #' Check partition

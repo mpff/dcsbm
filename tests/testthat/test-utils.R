@@ -62,6 +62,18 @@ test_that("Resample has no surprises", {
   expect_equal(length(resample(x[x >  10])), 0)
 })
 
+test_that("Sample at least once has no surprises", {
+  x <- 1:10
+
+  smpl1 <- sample_at_least_once(x, 10)
+  expect_equal(x, sort(smpl1))
+
+  smpl2 <- sample_at_least_once(x, 20, prob = rep(0.1, 10))
+  expect_equal(length(smpl2), 20)
+
+  expect_error(sample_at_least_once(x, 5), regexp = "^Not enough*.")
+})
+
 test_that("Check partition works", {
   p1 <- c(1, 1, 2, 2, 3, 3)
   p1c <- check_partition(p1)
