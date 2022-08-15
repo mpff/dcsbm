@@ -1,7 +1,7 @@
 
 
 
-collapse_step <- function(graph, partition, n.merges = 1, n.moves = 10, n.sweeps = 0, eps = 0.1)
+collapse_step <- function(graph, partition, n.merges = 1, n.moves = 10, n.sweeps = 0, eps = 0.1, beta = 1)
 {
   n.merges <- as.integer(n.merges)
   n.moves <- as.integer(n.moves)
@@ -100,12 +100,10 @@ collapse_step <- function(graph, partition, n.merges = 1, n.moves = 10, n.sweeps
   new_entropy_delta <- get_entropy(graph, new_partition) - old_entropy
 
   # Perform mcmc sweeps to settle partition (costly)
-  if(n.sweeps > 0) {
-    for (i in 1:n.sweeps) {
-      sweep_results <- mcmc_single_sweep(graph, new_partition, B.start - 1)
-      new_partition <- sweep_results$new_partition
-      new_entropy_delta <- new_entropy_delta + sweep_results$entropy_delta
-    }
+  if (n.sweeps > 0) {
+    sweep_results <- mcmc_sweep(graph, new_partition, B.start-1, n.sweeps, eps, beta)
+    new_partition <- sweep_results$best_partition
+    new_entropy_delta <- new_entropy_delta + sweep_results$best_entropy_delta
   }
 
   new_partition <- check_partition(new_partition)
