@@ -198,7 +198,7 @@ get_proposal_results <- function(curr_v, proposed_new_block,
   # Calculate new entropy (speed this up!)
   new_edge_matrix <- block_edge_counts(G, new_partition, n.blocks = length(block.edges))
   new_node_counts <- block_node_counts(new_partition, n.blocks = length(block.edges))
-  new_entropy <- entropy_undirected_trad(new_edge_matrix, new_node_counts)
+  new_entropy <- entropy_trad(new_edge_matrix, new_node_counts)
 
   entropy_delta <- new_entropy - old_entropy
 

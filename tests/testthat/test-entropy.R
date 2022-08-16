@@ -6,9 +6,17 @@ test_that("Calculating undirected traditional entropy works", {
 
   E2 <- matrix(c(6,0,0,0), nrow = 2)
   n2 <- c(3, 0)
-  S2 <- entropy_undirected_trad(E2, n2)
+  S2 <- entropy_trad(E2, n2)
   expect_equal(S2, 0.5 * 9 * H_binary(6/9))
 })
+
+test_that("Calculating directed traditional entropy works", {
+  g1 <- make_full_graph(4, directed=TRUE, loops=FALSE)
+  p1 <- c(rep(1,2), rep(2,2))
+  S1 <- get_entropy(g1, p1)
+  expect_equal(S1, 4 * sum(H_binary(c(0.5, 0.5))))
+})
+
 
 
 test_that("Calculating entropy does not fail, when groups missing in partition", {

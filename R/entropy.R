@@ -34,20 +34,16 @@ get_entropy <- function (graph, partition,
   # Renumber blocks in partition.
   partition <- check_partition(partition)
   # Calculate Entropy
-  if(!is.directed(graph)){
-    if(degree_correction == "none") {
-      E <- block_edge_counts(graph, partition)
-      n <- block_node_counts(partition)
-      S <- entropy_undirected_trad(E, n)
-    }
-    else stop("Entropy for these parameters not yet implemented.")
-  }
-  else stop("Entropy for directed graphs not yet implemented.")
+  if(degree_correction == "none") {
+    E <- block_edge_counts(graph, partition)
+    n <- block_node_counts(partition)
+    S <- entropy_trad(E, n, directed = is.directed(graph))
+  } else stop("Entropy for these parameters not yet implemented.")
   S
 }
 
 
-#' Entropy (undirected, no degree correction)
+#' Entropy (no degree correction)
 #'
 #' Calculate the entropy associated with the current block partition.
 #'
@@ -57,7 +53,7 @@ get_entropy <- function (graph, partition,
 #' @param n Integer vector of node counts associated with current partition
 #' @import igraph
 
-entropy_undirected_trad <- function (E, n)
+entropy_trad <- function (E, n, directed = FALSE)
 {
   if(any(n == 0)){
     miss.blocks <- which(n == 0)
@@ -67,5 +63,6 @@ entropy_undirected_trad <- function (E, n)
   Enn <- (E / n) %*% diag(1/n, nrow = length(n))
   Hmat <- H_binary(Enn)
   S <- .5 * matrix(n, nrow = 1) %*% Hmat %*% matrix(n)
+  if(directed) S <- 2 * S
   as.numeric(S)
 }
