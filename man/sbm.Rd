@@ -6,9 +6,10 @@
 \usage{
 sbm(
   graph,
-  n.blocks,
-  degree_correction = c("none", "oneway", "twoways"),
-  control = list()
+  n.blocks = c(1, Inf),
+  n.moves = 10,
+  n.sweeps = 0,
+  control = list(sigma = 1.5, eps = 0.1, beta = 1)
 )
 }
 \arguments{
@@ -16,9 +17,9 @@ sbm(
 
 \item{n.blocks}{Number of blocks.}
 
-\item{degree_correction}{Type of degree correction to use. "oneway" for one
-parameter per vertex, "twoways" for two parameters per vertex (input/output),
-"none" for no degree correction.}
+\item{n.moves}{Number of merge trials per block.}
+
+\item{n.sweeps}{Number of sweeps after block merge.}
 
 \item{control}{List of parameters for the inference algorithm.}
 }
@@ -30,8 +31,10 @@ Estimate a ...
 }
 \examples{
 ## Three groups with weighted connections.
-g1 <- sample_ppm(1000, p=0.1, q=0.003, block.sizes=c(100,600,300))
-model <- sbm(g1, 3)
+g1 <- sample_ppm2(300, 0.9, 10, 3)
+g1 <- simplify(g1)
+g1 <- delete.vertices(g1, degree(g1) == 0)
+model <- sbm(g1)
 }
 \keyword{block}
 \keyword{correction}
