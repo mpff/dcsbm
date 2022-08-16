@@ -9,7 +9,7 @@ sbm(
   n.blocks = c(1, Inf),
   n.moves = 10,
   n.sweeps = 0,
-  control = list(sigma = 1.5, eps = 0.1, beta = 1)
+  control = list(sigma = 1.5, eps = 0.1, beta = 1, start_partition = NULL)
 )
 }
 \arguments{
