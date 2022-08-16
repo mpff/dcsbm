@@ -51,13 +51,16 @@ collapse_step <- function(graph, partition, n.merges = 1, n.moves = 10, n.sweeps
 
       } else {
 
-        # Get a merge proposal using the mcmc sweep move proposal function.
-        proposed_merge <- propose_move(V(block.graph)[b], block.graph, 1:B.start, block.graph.edges, eps)
+        # Repeat until new block is proposed (hacky!)
+        proposed_merge <- b
+        while (b == proposed_merge) {
+          # Get a merge proposal using the mcmc sweep move proposal function.
+          proposed_merge <- propose_move(V(block.graph)[b], block.graph, 1:B.start, block.graph.edges, eps)
+        }
 
-        # If proposed merge is the current block, or was already proposed,
+        # If proposed merge was already proposed,
         # we don't need to waste time checking because decision will always
         # result in same state.
-        if (b == proposed_merge) next
         if (any(merge.results[merge.results[,1] == b, 2] == proposed_merge)) next
         if (any(merge.results[merge.results[,1] == proposed_merge, 2] == b)) next
 
