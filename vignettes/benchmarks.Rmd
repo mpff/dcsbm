@@ -35,7 +35,7 @@ results <- bench::press(
       edge_count = block_edge_counts(G, p),
       entropy = get_entropy(G, p),
       mcmc_sweep = mcmc_single_sweep(G, p, 3),
-      agglom_merge = invisible(capture.output(sbm(G, n.moves=1, n.sweeps=0)),
+      agglom_merge = invisible(capture.output(sbm(G, n.moves=1, n.sweeps=0))),
       check = FALSE
     )
   }
