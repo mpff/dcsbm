@@ -19,9 +19,9 @@
 #' g <- delete.vertices(g, degree(g) == 0)
 #' start_partition <- sample(1:3, size = 30, replace = TRUE)
 #' res <- mcmc_sweep(g, start_partition, 3, n.sweeps = 50)
-#' plot(G, vertex.color = start_partition, vertex.label = NA)
-#' plot(result$entropy_delta/length(E(G)), type = "line")
-#' plot(G, vertex.color = res$best_partition, vertex.label = NA)
+#' plot(g, vertex.color = start_partition, vertex.label = NA)
+#' plot(res$entropy_delta/length(E(g)), type = "line")
+#' plot(g, vertex.color = res$best_partition, vertex.label = NA)
 #' @export
 #' @import igraph
 
