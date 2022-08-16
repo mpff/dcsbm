@@ -14,7 +14,7 @@ propose_move(curr_v, G, p, block.edges, eps = 1)
 \item{p}{Vector of integer values giving the block membership of each
 vertex}
 
-\item{block.edges}{asdf}
+\item{block.edges}{a list of all incident edge ids per block}
 
 \item{eps}{(optional) A number giving the ...}
 }

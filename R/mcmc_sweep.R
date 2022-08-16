@@ -4,14 +4,24 @@
 #' 2018). Each node is given a chance to move blocks or stay in current block
 #' and all nodes are processed in random order for each sweep.
 #'
-#' @param graph An igraph graph.
-#' @param partition Vector of integer values giving the initial block membership
+#' @param G An igraph graph.
+#' @param p Vector of integer values giving the initial block membership
 #' of each vertex
 #' @param B Number of blocks.
 #' @param n.sweeps Number of sweeps to run.
 #' @param eps (optional) A number giving the ...
 #' @param beta (optional) A number giving the greediness of the moves.
 #' @return A new partition given as a vector of integer values.
+#' @examples
+#' ## Three groups with weighted connections.
+#' g <- sample_ppm2(30, c = 0.9, k = 10, B = 3)
+#' g <- simplify(g)
+#' g <- delete.vertices(g, degree(g) == 0)
+#' start_partition <- sample(1:3, size = 30, replace = TRUE)
+#' res <- mcmc_sweep(g, start_partition, 3, n.sweeps = 50)
+#' plot(G, vertex.color = start_partition, vertex.label = NA)
+#' plot(result$entropy_delta/length(E(G)), type = "line")
+#' plot(G, vertex.color = res$best_partition, vertex.label = NA)
 #' @export
 #' @import igraph
 
@@ -56,8 +66,8 @@ mcmc_sweep <- function(G, p, B, n.sweeps = 1, eps = 0.1, beta = 1)
 #' 2018). Each node is given a chance to move blocks or stay in current block
 #' and all nodes are processed in random order.
 #'
-#' @param graph An igraph graph.
-#' @param partition Vector of integer values giving the block membership of each
+#' @param G An igraph graph.
+#' @param p Vector of integer values giving the block membership of each
 #' vertex
 #' @param B Number of blocks.
 #' @param eps (optional) A number giving the ...
@@ -119,7 +129,7 @@ mcmc_single_sweep <- function(G, p, B, eps = 0.1, beta = 1)
 #' @param G An igraph graph.
 #' @param p Vector of integer values giving the block membership of each
 #' vertex
-#' @param block.edges asdf
+#' @param block.edges a list of all incident edge ids per block
 #' @param eps (optional) A number giving the ...
 #' @return A new group membership for vertex.
 #' @import igraph
@@ -154,6 +164,18 @@ propose_move <- function(curr_v, G, p, block.edges, eps = 1) {
 #' Calculate entropy delta of the SBM before and after the proposed move and
 #' the ratio of the probabilities of moving to the proposed block before the move and
 #' moving back to the original block after the move.
+#'
+#' @param curr_v A node in graph.
+#' @param proposed_new_block An integer giving the proposed block id.
+#' @param old_entropy A number giving the pre move entropy
+#' @param G An igraph graph.
+#' @param old_partition Vector of integer values giving the block membership of each
+#' vertex pre move.
+#' @param block.edges a list of all incident edge ids per block
+#' @param eps (optional) A number giving the ...
+#' @param beta (optional) A number giving the greediness of the moves.
+#' @return A new group membership for vertex.
+#' @import igraph
 
 get_proposal_results <- function(curr_v, proposed_new_block,
                                  old_entropy, G, old_partition, block.edges,
@@ -219,6 +241,11 @@ get_proposal_results <- function(curr_v, proposed_new_block,
 
 
 #' Create list of edges per block
+#'
+#' @param G An igraph graph.
+#' @param p Vector of integer values giving the block membership of each
+#' vertex
+#' @param B Number of blocks.
 
 block_edge_list <- function(G, p, B = NULL)
 {
@@ -236,6 +263,15 @@ block_edge_list <- function(G, p, B = NULL)
 }
 
 
+#' Create list of edges per block
+#'
+#' @param block.edges ...
+#' @param v vertex id
+#' @param G An igraph graph.
+#' @param new.b ...
+#' @param old.b ...
+#' @return A new block.edges list.
+
 update_block_edge_list <- function(block.edges, v, G, new.b, old.b)
 {
   v.edges <- as_ids(incident(G, v, mode = "all"))
@@ -244,6 +280,13 @@ update_block_edge_list <- function(block.edges, v, G, new.b, old.b)
   block.edges
 }
 
+
+#' Create list of edges per block
+#'
+#' @param p Vector of integer values giving the block membership of each
+#' vertex
+#' @param curr_v vertex id
+#' @param proposed_new_block block id
 
 swap_blocks <- function(p, curr_v, proposed_new_block){
   p[curr_v] <- proposed_new_block

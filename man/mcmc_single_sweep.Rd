@@ -7,16 +7,16 @@
 mcmc_single_sweep(G, p, B, eps = 0.1, beta = 1)
 }
 \arguments{
+\item{G}{An igraph graph.}
+
+\item{p}{Vector of integer values giving the block membership of each
+vertex}
+
 \item{B}{Number of blocks.}
 
 \item{eps}{(optional) A number giving the ...}
 
 \item{beta}{(optional) A number giving the greediness of the moves.}
-
-\item{graph}{An igraph graph.}
-
-\item{partition}{Vector of integer values giving the block membership of each
-vertex}
 }
 \value{
 A new partition given as a vector of integer values.

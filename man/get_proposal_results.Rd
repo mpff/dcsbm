@@ -17,6 +17,27 @@ get_proposal_results(
   beta = 1
 )
 }
+\arguments{
+\item{curr_v}{A node in graph.}
+
+\item{proposed_new_block}{An integer giving the proposed block id.}
+
+\item{old_entropy}{A number giving the pre move entropy}
+
+\item{G}{An igraph graph.}
+
+\item{old_partition}{Vector of integer values giving the block membership of each
+vertex pre move.}
+
+\item{block.edges}{a list of all incident edge ids per block}
+
+\item{eps}{(optional) A number giving the ...}
+
+\item{beta}{(optional) A number giving the greediness of the moves.}
+}
+\value{
+A new group membership for vertex.
+}
 \description{
 Calculate entropy delta of the SBM before and after the proposed move and
 the ratio of the probabilities of moving to the proposed block before the move and

@@ -7,6 +7,11 @@
 mcmc_sweep(G, p, B, n.sweeps = 1, eps = 0.1, beta = 1)
 }
 \arguments{
+\item{G}{An igraph graph.}
+
+\item{p}{Vector of integer values giving the initial block membership
+of each vertex}
+
 \item{B}{Number of blocks.}
 
 \item{n.sweeps}{Number of sweeps to run.}
@@ -14,11 +19,6 @@ mcmc_sweep(G, p, B, n.sweeps = 1, eps = 0.1, beta = 1)
 \item{eps}{(optional) A number giving the ...}
 
 \item{beta}{(optional) A number giving the greediness of the moves.}
-
-\item{graph}{An igraph graph.}
-
-\item{partition}{Vector of integer values giving the initial block membership
-of each vertex}
 }
 \value{
 A new partition given as a vector of integer values.
@@ -27,4 +27,15 @@ A new partition given as a vector of integer values.
 Runs a n.sweeps MCMC sweep across all nodes (for algorithm details see Piexoto,
 2018). Each node is given a chance to move blocks or stay in current block
 and all nodes are processed in random order for each sweep.
+}
+\examples{
+## Three groups with weighted connections.
+g <- sample_ppm2(30, c = 0.9, k = 10, B = 3)
+g <- simplify(g)
+g <- delete.vertices(g, degree(g) == 0)
+start_partition <- sample(1:3, size = 30, replace = TRUE)
+res <- mcmc_sweep(g, start_partition, 3, n.sweeps = 50)
+plot(G, vertex.color = start_partition, vertex.label = NA)
+plot(result$entropy_delta/length(E(G)), type = "line")
+plot(G, vertex.color = res$best_partition, vertex.label = NA)
 }
