@@ -64,7 +64,7 @@ result <- mcmc_sweep(G, start_partition, 3, n.sweeps = 50)
 
 # Visualize start/end partition and entropy delta.
 plot(G, vertex.color = start_partition, vertex.label = NA)
-plot(result$entropy_delta, type = "line")
+plot(result$entropy_delta/length(E(G)), type = "line")
 plot(G, vertex.color = result$best_partition, vertex.label = NA)
 ```
 
@@ -74,20 +74,11 @@ plot(G, vertex.color = result$best_partition, vertex.label = NA)
 ```{r, eval = FALSE, echo = FALSE}
 G <- sample_ppm2(300, 0.95, 10, 6)
 G <- simplify(G)
-E <- length(E(G))
-p.start <- sample(1:30, length(G), replace=TRUE)
-p.start <- check_partition(p.start)
-p.new <- p.start
-dS <- c(0)
-dB <- c(max(p.new))
-while(max(p.new) > 1){
-   B.curr <- max(p.new)
-   n.merges <- B.curr - floor(B.curr/1.5)
-   cb <- collapse_step(G, p.new, n.merges = n.merges, n.sweeps = 2)
-   p.new <- cb$new_partition
-   dS <- append(dS, cb$entropy_delta)
-   dB <- append(dB, max(p.new))
-   plot(G, vertex.color = p.new, vertex.label = NA)
+
+model <- sbm(G, n.sweeps = 0)
+ 
+for (p in model$partitions) {
+  plot(G, vertex.color = p, vertex.label = NA)
 }
-plot(dB, dS, type = "line")
+plot(model$block_sequence, model$entropy_delta, type = "line")
 ```
