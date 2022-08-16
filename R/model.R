@@ -20,7 +20,7 @@
 #' @importFrom utils setTxtProgressBar txtProgressBar
 
 sbm <- function (graph, n.blocks = c(1, Inf), n.moves = 10, n.sweeps = 0,
-                 control = list(sigma = 1.5, eps = 0.1, beta = 1))
+                 control = list(sigma = 1.5, eps = 0.1, beta = 1, start_partition = NULL))
 {
   # Initial graph checks
   stopifnot(is.igraph(graph))
@@ -53,7 +53,11 @@ sbm <- function (graph, n.blocks = c(1, Inf), n.moves = 10, n.sweeps = 0,
   E <- length(E(graph))
 
   # Start partition
-  start_partition <- sample_at_least_once(1:max.blocks, N)
+  if(!is.null(control$start_partition)) {
+    start_partition <- control$start_partition
+  } else {
+    start_partition <- sample_at_least_once(1:max.blocks, N)
+  }
   start_partition <- check_partition(start_partition)
   start_entropy <- get_entropy(graph, start_partition)/E
 
@@ -62,7 +66,7 @@ sbm <- function (graph, n.blocks = c(1, Inf), n.moves = 10, n.sweeps = 0,
   partition_iter <- list(start_partition)
 
   # Merge sequence
-  block_iter <- block_sequence(max.blocks, sigma, min.blocks)
+  block_iter <- block_sequence(max.blocks, min.blocks, sigma)
   merges_iter <- -1 * diff(block_iter)
 
   # Loop trough all merges
@@ -81,18 +85,21 @@ sbm <- function (graph, n.blocks = c(1, Inf), n.moves = 10, n.sweeps = 0,
 }
 
 
-block_sequence <- function(B, sigma, min.B = 1) {
+block_sequence <- function(Bmax, Bmin = 1, sigma = 1.5) {
 
-  B <- as.integer(B)
+  Bmax <- as.integer(Bmax)
+  Bmin <- as.integer(Bmin)
 
+  stopifnot(Bmax >= 1, Bmax >= Bmin)
+  stopifnot(Bmin >= 1)
   stopifnot(sigma > 1)
-  stopifnot(B >= 1)
 
-  B.seq <- c(B)
-  next.B <- floor(B/sigma)
-  while (next.B/sigma > min.B) {
-    B.seq <- append(B.seq, next.B)
-    next.B <- floor(next.B/sigma)
+  effBmax <- Bmax - Bmin
+  effBseq <- c(effBmax)
+  effBnext <- floor(effBmax/sigma)
+  while (effBnext/sigma > 0) {
+    effBseq <- append(effBseq, effBnext)
+    effBnext <- floor(effBnext/sigma)
   }
-  return(append(B.seq, min.B))
+  return(append(effBseq + Bmin, Bmin))
 }

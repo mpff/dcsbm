@@ -23,16 +23,14 @@ set.seed(2022)
 
 ```{r, eval = FALSE, echo = FALSE}
 results <- bench::press(
-  Nsize = c(10, 100, 1000),
+  Nsize = c(10, 100, 300),
   {
-    G <- sample_ppm2(Nsize, c=0.9, k=3, B=3)
+    G <- sample_ppm2(Nsize, c=0.9, k=10, B=3)
     G <- simplify(G)
     G <- delete.vertices(G, degree(G) == 0)
     p <- sample(1:3, Nsize, replace = TRUE)
     bench::mark(
       min_iterations = 5,
-      node_count = block_node_counts(p),
-      edge_count = block_edge_counts(G, p),
       entropy = get_entropy(G, p),
       mcmc_sweep = mcmc_single_sweep(G, p, 3),
       agglom_merge = invisible(capture.output(sbm(G, n.moves=1, n.sweeps=0))),

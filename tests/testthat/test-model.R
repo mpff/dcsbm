@@ -12,3 +12,18 @@ test_that("Agglomerative merging works", {
   n_merges2 <- length(m2$partition)
   expect_equal(max(m2$partition[[n_merges2]]), 1)
 })
+
+
+test_that("Can create block sequences", {
+  bs1 <- block_sequence(5)
+  expect_equal(bs1, c(5,3,2,1))
+
+  bs2 <- block_sequence(5, sigma = 4)
+  expect_equal(bs2, c(5,2,1))
+
+  bs3 <- block_sequence(10, 6, sigma = 4)
+  expect_equal(bs3, c(10,7,6))
+
+  bs4 <- block_sequence(10, 6)
+  expect_equal(bs4, c(10,8,7,6))
+})
