@@ -1,4 +1,4 @@
-#' Degree corrected stochastic block model
+#' Stochastic block model
 #'
 #' Estimate a ...
 #'
@@ -83,6 +83,7 @@ sbm <- function (graph, n.blocks = c(1, Inf), n.moves = 10, n.sweeps = 0,
   list("block_sequence" = block_iter, "entropy_delta" = entropy_delta_iter,
        "partitions" = partition_iter)
 }
+
 
 
 block_sequence <- function(Bmax, Bmin = 1, sigma = 1.5) {

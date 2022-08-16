@@ -2,7 +2,7 @@
 % Please edit documentation in R/model.R
 \name{sbm}
 \alias{sbm}
-\title{Degree corrected stochastic block model}
+\title{Stochastic block model}
 \usage{
 sbm(
   graph,
