@@ -9,9 +9,9 @@ entropy_corrected_oneway(E, d, directed = FALSE)
 \arguments{
 \item{E}{Integer matrix of edge counts associated with current partition.}
 
-\item{directed}{Whether graph is directed.}
+\item{d}{Integer vector of node degrees.}
 
-\item{k}{Integer vector of node degrees.}
+\item{directed}{Whether graph is directed.}
 }
 \description{
 Calculate the entropy associated with the current block partition.

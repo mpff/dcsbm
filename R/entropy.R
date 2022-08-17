@@ -84,7 +84,7 @@ entropy_trad <- function (E, n, directed = FALSE)
 #' }
 #'
 #' @param E Integer matrix of edge counts associated with current partition.
-#' @param k Integer vector of node degrees.
+#' @param d Integer vector of node degrees.
 #' @param directed Whether graph is directed.
 #' @import igraph
 
