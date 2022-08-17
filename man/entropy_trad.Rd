@@ -10,6 +10,8 @@ entropy_trad(E, n, directed = FALSE)
 \item{E}{Integer matrix of edge counts associated with current partition}
 
 \item{n}{Integer vector of node counts associated with current partition}
+
+\item{directed}{Whether graph is directed}
 }
 \description{
 Calculate the entropy associated with the current block partition.

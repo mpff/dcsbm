@@ -4,13 +4,18 @@ test_that("Agglomerative merging works", {
     expect_error(sbm(g1), NA)
   ))
 
-  g2 <- sample_ppm2(60, 0.9, 20, 5)
-  g2 <- simplify(g2)
+  g2 <- make_full_graph(4, directed = TRUE)
   invisible(capture.output(
-    m2 <- sbm(g2, n.moves = 1, n.sweeps = 0)
+    expect_error(sbm(g2), NA)
   ))
-  n_merges2 <- length(m2$partition)
-  expect_equal(max(m2$partition[[n_merges2]]), 1)
+
+  g3 <- sample_ppm2(60, 0.9, 20, 5)
+  g3 <- simplify(g3)
+  invisible(capture.output(
+    m3 <- sbm(g3, n.moves = 1, n.sweeps = 0)
+  ))
+  n_merges3 <- length(m3$partition)
+  expect_equal(max(m3$partition[[n_merges3]]), 1)
 })
 
 

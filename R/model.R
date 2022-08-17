@@ -26,7 +26,6 @@ sbm <- function (graph, n.blocks = c(1, Inf), n.moves = 10, n.sweeps = 0,
   stopifnot(is.igraph(graph))
   stopifnot(is.simple(graph))
   stopifnot(all(degree(graph) > 0))
-  stopifnot(!is.directed(graph))
 
   # Initial parameter checks
   n.moves = as.integer(n.moves)

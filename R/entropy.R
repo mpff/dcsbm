@@ -7,7 +7,7 @@
 #' @param partition Vector of integer values giving the block membership of each
 #' vertex
 #' @param degree_correction Type of degree correction to use. "oneway" for one
-#' parameter per vertex, "twoways" for two parameters per vertex (input/output),
+#' parameter per vertex, "twoway" for two parameters per vertex (input/output),
 #' "none" for no degree correction.
 #' @return Entropy value (numeric) for the given graph and partition.
 #' @keywords graphs, inference, stochastic block model, degree correction
@@ -21,7 +21,7 @@
 #' @import igraph
 
 get_entropy <- function (graph, partition,
-                         degree_correction = c("none", "oneway", "twoways"))
+                         degree_correction = c("none", "oneway", "twoway"))
 {
   # Initial checks
   stopifnot(is.igraph(graph))
@@ -38,6 +38,10 @@ get_entropy <- function (graph, partition,
     E <- block_edge_counts(graph, partition)
     n <- block_node_counts(partition)
     S <- entropy_trad(E, n, directed = is.directed(graph))
+  } else if (degree_correction == "oneway") {
+    E <- block_edge_counts(graph, partition)
+    d <- degree(graph)
+    S <- entropy_corrected_oneway(E, d, directed = is.directed(graph))
   } else stop("Entropy for these parameters not yet implemented.")
   S
 }
@@ -51,6 +55,7 @@ get_entropy <- function (graph, partition,
 #'
 #' @param E Integer matrix of edge counts associated with current partition
 #' @param n Integer vector of node counts associated with current partition
+#' @param directed Whether graph is directed
 #' @import igraph
 
 entropy_trad <- function (E, n, directed = FALSE)
@@ -64,5 +69,43 @@ entropy_trad <- function (E, n, directed = FALSE)
   Hmat <- H_binary(Enn)
   S <- .5 * matrix(n, nrow = 1) %*% Hmat %*% matrix(n)
   if(directed) S <- 2 * S
+  as.numeric(S)
+}
+
+
+#' Entropy (degree corrected)
+#'
+#' Calculate the entropy associated with the current block partition.
+#'
+#' \deqn{
+#'   S_c = - E - \sum_k N_k \ln k! - \frac{1}{2} \sum_{rs} e_{rs} \ln\left(\frac{e_{rs}}{e_r e_s}\right)
+#' }{
+#'   St = - E - sum(N[k] * ln k!) - 0.5 * sum(e[r,s] * ln(e[r,s] / (e[r]*e[s])))
+#' }
+#'
+#' @param E Integer matrix of edge counts associated with current partition.
+#' @param k Integer vector of node degrees.
+#' @param directed Whether graph is directed.
+#' @import igraph
+
+entropy_corrected_oneway <- function (E, d, directed = FALSE)
+{
+  # Calcualte part of entropy relating to total amount of edges
+  edge_entropy <- sum(E)/2
+
+  # Calculate part of entropy relating to different degrees
+  degree_unique <- sort(unique(d))
+  degree_counts <- table(d)
+  degree_entropy <- sum(degree_counts * log(factorial(degree_unique)))
+
+  # Calculate part of entropy relating to block edge counts
+  e <- colSums(E)
+  Eee <- (E / e) %*% diag(1/e, nrow = length(e))
+  block_edges_entropy <- 0.5 * sum(E * log(Eee))
+
+  # Add everything together
+  S <- - edge_entropy - degree_entropy - block_edges_entropy
+  if(directed) stop("Entropy for these parameters not yet implemented.")
+
   as.numeric(S)
 }

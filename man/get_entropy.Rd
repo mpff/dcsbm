@@ -7,7 +7,7 @@
 get_entropy(
   graph,
   partition,
-  degree_correction = c("none", "oneway", "twoways")
+  degree_correction = c("none", "oneway", "twoway")
 )
 }
 \arguments{
@@ -17,7 +17,7 @@ get_entropy(
 vertex}
 
 \item{degree_correction}{Type of degree correction to use. "oneway" for one
-parameter per vertex, "twoways" for two parameters per vertex (input/output),
+parameter per vertex, "twoway" for two parameters per vertex (input/output),
 "none" for no degree correction.}
 }
 \value{
