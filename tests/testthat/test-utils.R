@@ -49,6 +49,13 @@ test_that("Calculating node counts works", {
   expect_equal(n3, c(2,2,0))
 })
 
+test_that("Calculating effective degree sequence works", {
+  g1 <- sample_ppm2(30, 0.5, 10, 3)
+  p1 <- sample_at_least_once(1:3, 30)
+  ds1 <- block_degree_sequence(g1, p1)
+  expect_equal(sum(ds1), 3)
+})
+
 
 test_that("Calculating binary entropy works", {
   H1 <- H_binary(c(0, 0.5, 1))

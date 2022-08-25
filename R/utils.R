@@ -52,6 +52,27 @@ block_node_counts <- function(partition, n.blocks = NULL) {
 }
 
 
+#' Sequence of effective degrees per block.
+#'
+#' @param graph An igraph graph.
+#' @param partition A vector of group id's for each node of graph.
+#' @param n.blocks The number of groups. Inferred from the
+#' number of individual group id's in partition by default.
+#' @import igraph
+
+block_degree_sequence <- function(graph, partition, n.blocks = NULL) {
+  stopifnot(length(graph) == length(partition))
+  degree_sequence <- degree(graph)
+  block_degree_sums <- tapply(degree_sequence, partition, FUN=sum)
+  effective_degree_sequence <- sapply(seq_along(degree_sequence), function(i){
+    deg <- degree_sequence[i]
+    par <- partition[i]
+    block_deg_sum <- block_degree_sums[par]
+    deg/block_deg_sum
+  })
+  as.vector(effective_degree_sequence)
+}
+
 #' Binary entropy function
 #'
 #' @param x Numeric, vector or matrix with numbers between 0 and 1.
@@ -68,8 +89,8 @@ H_binary <- function (x)
 #' @param x Numeric or vector from which to resample.
 #' @param ... other arguments of \code{sample}.
 
-
 resample <- function(x, ...) x[sample.int(length(x), ...)]
+
 
 #' Sample at least once with replacement
 #' See https://stackoverflow.com/a/26350427/10042003.
