@@ -89,8 +89,8 @@ sample_ppm <- function (n, p, q, block.sizes,
 #' @keywords graphs, sample, planted partition
 #' @examples
 #' ## Three groups with only a few connection between groups
-#' G <- sample_ppm2(10000, c=0.99, k=10, B=3)
-#' p <- c(rep(1,3334), rep(2, 3333), rep(3, 3333))
+#' G <- sample_ppm2(300, c=0.9, k=10, B=3)
+#' p <- c(rep(1,100), rep(2, 200), rep(3, 300))
 #' plot(G, vertex.label=NA, vertex.color=p)
 #' @export
 #' @import igraph
