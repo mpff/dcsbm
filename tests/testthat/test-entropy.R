@@ -22,7 +22,7 @@ test_that("Calculating directed traditional entropy works", {
 test_that("Calculating oneway degree corrected entropy works", {
   g1 <- make_ring(4)
   p1 <- c(rep(1,2), rep(2,2))
-  S1 <- get_entropy(g1, p1, degree_correction = "oneway")
+  S1 <- get_entropy(g1, p1, degree_correction = TRUE)
   S1_expected <- - 4 - 4 * log(2) - 0.5 * 4 * 2 * log(0.125)
   expect_equal(S1, S1_expected)
 })

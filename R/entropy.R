@@ -11,38 +11,34 @@
 #' "none" for no degree correction.
 #' @return Entropy value (numeric) for the given graph and partition.
 #' @keywords graphs, inference, stochastic block model, degree correction
-#' @examples
-#' ## Three groups with weighted connections.
-#' g1 <- sample_ppm(100, 0.3, 0.03, block.sizes = c(30, 50, 20))
-#' ## random partition
-#' p1 <- sample(c(1,2,3), 100, replace = TRUE)
-#' get_entropy(g1, p1)
 #' @export
 #' @import igraph
 
-get_entropy <- function (graph, partition,
-                         degree_correction = c("none", "oneway", "twoway"))
+get_entropy <- function (graph, partition, degree_correction = FALSE)
 {
   # Initial checks
   stopifnot(is.igraph(graph))
   partition <- as.integer(partition)
-  degree_correction <- match.arg(degree_correction)
+  degree_correction <- as.logical(degree_correction)
   stopifnot(length(graph) == length(partition))
+
   # Add vertices with degree zero to first group.
   zero.vertices <- which(degree(graph) == 0)
   partition[zero.vertices] <- 1
+
   # Renumber blocks in partition.
   partition <- check_partition(partition)
+
   # Calculate Entropy
-  if(degree_correction == "none") {
+  if(!degree_correction) {
     E <- block_edge_counts(graph, partition)
     n <- block_node_counts(partition)
     S <- entropy_trad(E, n, directed = is.directed(graph))
-  } else if (degree_correction == "oneway") {
+  } else {
     E <- block_edge_counts(graph, partition)
     d <- degree(graph)
-    S <- entropy_corrected_oneway(E, d, directed = is.directed(graph))
-  } else stop("Entropy for these parameters not yet implemented.")
+    S <- entropy_corrected(E, d, directed = is.directed(graph))
+  }
   S
 }
 
@@ -88,7 +84,7 @@ entropy_trad <- function (E, n, directed = FALSE)
 #' @param directed Whether graph is directed.
 #' @import igraph
 
-entropy_corrected_oneway <- function (E, d, directed = FALSE)
+entropy_corrected <- function (E, d, directed = FALSE)
 {
   # Calcualte part of entropy relating to total amount of edges
   edge_entropy <- sum(E)/2

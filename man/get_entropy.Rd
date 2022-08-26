@@ -4,11 +4,7 @@
 \alias{get_entropy}
 \title{Entropy of a block partition}
 \usage{
-get_entropy(
-  graph,
-  partition,
-  degree_correction = c("none", "oneway", "twoway")
-)
+get_entropy(graph, partition, degree_correction = FALSE)
 }
 \arguments{
 \item{graph}{An igraph graph.}
