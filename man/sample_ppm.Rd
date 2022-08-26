@@ -2,22 +2,18 @@
 % Please edit documentation in R/sample.R
 \name{sample_ppm}
 \alias{sample_ppm}
-\title{Sample planted partition model}
+\title{Sample planted partition model (Piexoto 2014)}
 \usage{
-sample_ppm(n, p, q, block.sizes, n.trials = 1, directed = FALSE, loops = FALSE)
+sample_ppm(N, c, k, B, directed = FALSE, loops = FALSE)
 }
 \arguments{
-\item{n}{Number of vertices in the graph.}
+\item{N}{Number of vertices in the graph.}
 
-\item{p}{Probability of creating an edge between vertices of the same group.}
+\item{c}{A number between 0 and 1 controlling the}
 
-\item{q}{Probability of creating an edge between vertices of different groups.}
+\item{k}{The average degree of a vertex.}
 
-\item{block.sizes}{Numeric vector giving the number of vertices in each group.
-The sum of the vector must match the number of vertices.}
-
-\item{n.trials}{Number of repeated Bernoulli trials per edge. If
-\code{n.trials} is greater than 1, generates a weighted graph.}
+\item{B}{The number of blocks.}
 
 \item{directed}{Logical scalar, whether to generate a directed graph.}
 
@@ -27,21 +23,17 @@ The sum of the vector must match the number of vertices.}
 An igraph graph.
 }
 \description{
-Sampling from the planted partition model
+Sampling from the planted partition model as in Piexoto 2014.
 }
 \details{
-This function samples graphs from a stochastic block model by (doing the
-equivalent of) \code{n.trial} Bernoulli trials for each potential edge with
-probabilities given by \code{p} for in-group edges and \code{q} for between
-group edges.
+This function samples graphs from a stochastic block model by building a
+block adjacency matrix from the Parameters N, k, B and c.
 }
 \examples{
 ## Three groups with only a few connection between groups
-g1 <- sample_ppm(1000, p=0.3, q=0.01, block.sizes=c(100,600,300))
-g1
-## Three groups with weighted connections.
-g2 <- sample_ppm(1000, p=0.1, q=0.003, block.sizes=c(100,600,300), n.trials=3)
-g2
+G <- sample_ppm(300, c=0.9, k=10, B=3)
+p <- c(rep(1,100), rep(2, 200), rep(3, 300))
+plot(G, vertex.label=NA, vertex.color=p)
 }
 \keyword{graphs,}
 \keyword{partition}

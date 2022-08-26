@@ -12,16 +12,6 @@
 #' @param eps (optional) A number giving the ...
 #' @param beta (optional) A number giving the greediness of the moves.
 #' @return A new partition given as a vector of integer values.
-#' @examples
-#' ## Three groups with weighted connections.
-#' g <- sample_ppm2(30, c = 0.9, k = 10, B = 3)
-#' g <- simplify(g)
-#' g <- delete.vertices(g, degree(g) == 0)
-#' start_partition <- sample(1:3, size = 30, replace = TRUE)
-#' res <- mcmc_sweep(g, start_partition, 3, n.sweeps = 50)
-#' plot(g, vertex.color = start_partition, vertex.label = NA)
-#' plot(res$entropy_delta/length(E(g)), type = "line")
-#' plot(g, vertex.color = res$best_partition, vertex.label = NA)
 #' @export
 #' @import igraph
 

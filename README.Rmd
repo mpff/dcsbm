@@ -45,7 +45,7 @@ This is a basic example which shows you how to solve a common problem:
 library(dcsbm)
 
 # Generate graph by a planted partition model and estimate an sbm.
-g <- sample_ppm2(30, c=0.9, k=10, B=3)
+g <- sample_ppm(30, c=0.9, k=10, B=3)
 g <- simplify(g); g <- delete.vertices(g, degree(g) == 0)
 m <- sbm(g)
 

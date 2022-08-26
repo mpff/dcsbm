@@ -31,7 +31,7 @@ Estimate a ...
 }
 \examples{
 ## Three groups with weighted connections.
-g1 <- sample_ppm2(60, 0.9, 10, 3)
+g1 <- sample_ppm(60, 0.9, 10, 3)
 g1 <- simplify(g1)
 g1 <- delete.vertices(g1, degree(g1) == 0)
 model <- sbm(g1)

@@ -1,80 +1,6 @@
-#' Sample planted partition model
-#'
-#' Sampling from the planted partition model
-#'
-#' This function samples graphs from a stochastic block model by (doing the
-#' equivalent of) \code{n.trial} Bernoulli trials for each potential edge with
-#' probabilities given by \code{p} for in-group edges and \code{q} for between
-#' group edges.
-#'
-#' @param n Number of vertices in the graph.
-#' @param p Probability of creating an edge between vertices of the same group.
-#' @param q Probability of creating an edge between vertices of different groups.
-#' @param block.sizes Numeric vector giving the number of vertices in each group.
-#' The sum of the vector must match the number of vertices.
-#' @param n.trials Number of repeated Bernoulli trials per edge. If
-#' \code{n.trials} is greater than 1, generates a weighted graph.
-#' @param directed Logical scalar, whether to generate a directed graph.
-#' @param loops Logical scalar, whether self-loops are allowed in the graph.
-#' @return An igraph graph.
-#' @keywords graphs, sample, planted partition
-#' @examples
-#' ## Three groups with only a few connection between groups
-#' g1 <- sample_ppm(1000, p=0.3, q=0.01, block.sizes=c(100,600,300))
-#' g1
-#' ## Three groups with weighted connections.
-#' g2 <- sample_ppm(1000, p=0.1, q=0.003, block.sizes=c(100,600,300), n.trials=3)
-#' g2
-#' @export
-#' @import igraph
-
-sample_ppm <- function (n, p, q, block.sizes,
-                        n.trials = 1, directed = FALSE, loops = FALSE)
-{
-  n <- as.integer(n)
-  p <- as.double(p)
-  q <- as.double(q)
-  block.sizes <- as.integer(block.sizes)
-  n.trials <- as.integer(n.trials)
-  directed <- as.logical(directed)
-  loops <- as.logical(loops)
-  pm <- diag(p, length(block.sizes))
-  pm[upper.tri(pm) | lower.tri(pm)] <- q
-  res <- sample_sbm(n, pm, block.sizes, directed, loops)
-  if(n.trials > 1){
-    # See https://stackoverflow.com/a/27766128 (Combine two graphs with weights)
-    E(res)$weight <- 1
-    for (i in seq(n.trials - 1)){
-      resnew <- sample_sbm(n, pm, block.sizes, directed, loops)
-      E(resnew)$weight <- 1
-      res <- union(res, resnew)
-      E(res)$weight_1[is.na(E(res)$weight_1)] <- 0
-      E(res)$weight_2[is.na(E(res)$weight_2)] <- 0
-      E(res)$weight <- E(res)$weight_1 + E(res)$weight_2
-      res <- remove.edge.attribute(res, "weight_1")
-      res <- remove.edge.attribute(res, "weight_2")
-      if (igraph_opt("add.params")) {
-        res$name <- res$name_1
-        res <- remove.graph.attribute(res, "name_1")
-        res <- remove.graph.attribute(res, "name_2")
-        res$loops <- res$loops_1
-        res <- remove.graph.attribute(res, "loops_1")
-        res <- remove.graph.attribute(res, "loops_2")
-      }
-    }
-  }
-  if (igraph_opt("add.params")) {
-    res$name <- "Planted partition model"
-    if(n.trials > 1) res$name <- "Weighted planted partition model"
-    res$loops <- loops
-  }
-  res
-}
-
-
 #' Sample planted partition model (Piexoto 2014)
 #'
-#' Alternative sampling from the planted partition model (see Piexoto 2014)
+#' Sampling from the planted partition model as in Piexoto 2014.
 #'
 #' This function samples graphs from a stochastic block model by building a
 #' block adjacency matrix from the Parameters N, k, B and c.
@@ -89,13 +15,13 @@ sample_ppm <- function (n, p, q, block.sizes,
 #' @keywords graphs, sample, planted partition
 #' @examples
 #' ## Three groups with only a few connection between groups
-#' G <- sample_ppm2(300, c=0.9, k=10, B=3)
+#' G <- sample_ppm(300, c=0.9, k=10, B=3)
 #' p <- c(rep(1,100), rep(2, 200), rep(3, 300))
 #' plot(G, vertex.label=NA, vertex.color=p)
 #' @export
 #' @import igraph
 
-sample_ppm2 <- function (N, c, k, B, directed = FALSE, loops = FALSE)
+sample_ppm <- function (N, c, k, B, directed = FALSE, loops = FALSE)
 {
   # Input checks
   N <- as.integer(N)
@@ -103,7 +29,6 @@ sample_ppm2 <- function (N, c, k, B, directed = FALSE, loops = FALSE)
   k <- as.integer(k)
   B <- as.integer(B)
   directed <- as.logical(directed)
-  stopifnot(!directed)
   loops <- as.logical(loops)
 
   # Create block.sizes
@@ -154,6 +79,126 @@ sample_ppm2 <- function (N, c, k, B, directed = FALSE, loops = FALSE)
     res$c <- c
     res$k <- k
     res$B <- B
+  }
+
+  # Return
+  res
+}
+
+
+#' Sample planted partition model with degree variability (Piexoto 2020)
+#'
+#' Sampling from the planted partition model as described in Piexoto 2020.
+#'
+#' This function samples graphs from a stochastic block model by building a
+#' block adjacency matrix from the Parameters N, k, B and c.
+#'
+#' @param N Number of vertices in the graph.
+#' @param c A number between 0 and 1 controlling the
+#' @param k The average degree of a vertex.
+#' @param B The number of blocks.
+#' @param k_coef A number describing the degree variability within each block.
+#' A value of 0 means that all vertices have the same expected degree.#'
+#' @param directed Logical scalar, whether to generate a directed graph.
+#' @param loops Logical scalar, whether self-loops are allowed in the graph.
+#' @return An igraph graph.
+#' @keywords graphs, sample, planted partition
+#' @examples
+#' ## Three groups with only a few connection between groups
+#' G <- sample_dcppm(300, c=0.9, k=10, B=3, k_coef=2)
+#' p <- c(rep(1,100), rep(2, 200), rep(3, 300))
+#' plot(G, vertex.label=NA, vertex.color=p)
+#' @export
+#' @import igraph
+
+sample_dcppm <- function (N, c, k, B, k_coef = 0, directed = FALSE, loops = FALSE)
+{
+  # Input checks
+  N <- as.integer(N)
+  c <- as.double(c)
+  k <- as.integer(k)
+  B <- as.integer(B)
+  k_coef <- as.double(k_coef)
+  directed <- as.logical(directed)
+  loops <- as.logical(loops)
+
+  # Create block.sizes
+  n <- floor(N / B)
+  block.sizes <- rep(n, B)
+  while(sum(block.sizes) < N) block.sizes[1] <- block.sizes[1] + 1  # pad group 1
+
+  # Create edge count and pref. matrices
+  E <- N * k  # avg. no of edges
+  em <- diag(2 * E * c / B, B)
+  em[upper.tri(em) | lower.tri(em)] <- 2 * E * (1-c) / (B * (B-1))
+  pm <- 2*em/sum(em)
+
+  # Sample a degree sequence
+  deg <- rep(1, N)  # at least degree 1 for each vertex
+
+  if (!directed) {
+    bdeg <- colSums(em/2)
+  } else {
+    bdeg <- colSums(em)
+  }
+
+  for (b in 1:B) {
+    # Get vertices inbn block b
+    b.first <- sum(block.sizes[0:(b-1)]) + 1
+    b.last  <- sum(block.sizes[0:b])
+
+    # build variability distribution over vertices in block b
+    prob <- (1:(b.last - b.first + 1))**k_coef
+    prob <- prob/sum(prob)
+
+    # Sample degrees from variability distribution
+    while (sum(deg[b.first:b.last]) < bdeg[b]) {
+      i <- sample(b.first:b.last, 1, prob = prob)
+      deg[i] <- deg[i] + 1
+    }
+  }
+
+  # Sample from SBM according to em, pm and deg.
+  res <- make_empty_graph(N, directed = directed)
+
+  for(b in 1:B){
+
+    # Get vertices in block b
+    b.first <- sum(block.sizes[0:(b-1)]) + 1
+    b.last  <- sum(block.sizes[0:b])
+    b.vertices <- V(res)[b.first:b.last]
+
+    # Iterate over each vertex
+    for(v.fro in b.vertices) {
+      for (i in 1:deg[v.fro]) {
+        # Sample adjacent block according to pm
+        b.to <- sample(1:B, 1, prob = pm[b,])
+
+        # Sample a vertex from this block according to deg
+        b.to.first <- sum(block.sizes[0:(b.to-1)]) + 1
+        b.to.last  <- sum(block.sizes[0:b.to])
+        b.to.vertices <- V(res)[b.to.first:b.to.last]
+        v.to <- sample(b.to.vertices, 1, prob = deg[b.to.first:b.to.last])
+
+        ## TODO: Check if v.to = v and account for loops!
+        if(!loops) {
+          while(v.to == v.fro) v.to <- sample(b.to.vertices, 1, prob = deg[b.to.first:b.to.last])
+        }
+
+        # Add edge to graph
+        res <- add_edges(res, c(v.fro, v.to))
+      }
+    }
+  }
+
+  # Add parameters
+  if (igraph_opt("add.params")) {
+    res$name <- "Planted partition model with degree variability"
+    res$loops <- loops
+    res$c <- c
+    res$k <- k
+    res$B <- B
+    res$k_coef <- k_coef
   }
 
   # Return

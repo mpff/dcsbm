@@ -11,7 +11,7 @@ test_that("Making an multiple MCMC sweeps works", {
 
 test_that("MCMC sweeps PPM2 example works", {
   Nsize <- 10
-  G <- sample_ppm2(Nsize, c = 0.9, k = 10, B = 3)
+  G <- sample_ppm(Nsize, c = 0.9, k = 10, B = 3)
   p <- c(rep(1, 0.3*Nsize), rep(2, 0.5*Nsize), rep(3, 0.2*Nsize))
 
   expect_error(mcmc_sweep(G, p, 3, n.sweeps = 2), class = "simpleError")
@@ -34,7 +34,7 @@ test_that("Making an single MCMC sweep works", {
 
 test_that("Single MCMC sweep PPM2 example works", {
   Nsize <- 10
-  G <- sample_ppm2(Nsize, c = 0.9, k = 10, B = 3)
+  G <- sample_ppm(Nsize, c = 0.9, k = 10, B = 3)
   p <- c(rep(1, 0.3*Nsize), rep(2, 0.5*Nsize), rep(3, 0.2*Nsize))
 
   expect_error(mcmc_single_sweep(G, p, 3), class = "simpleError")

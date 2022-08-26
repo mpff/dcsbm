@@ -9,7 +9,7 @@ test_that("Agglomerative merging works", {
     expect_error(sbm(g2), NA)
   ))
 
-  g3 <- sample_ppm2(60, 0.9, 20, 5)
+  g3 <- sample_ppm(60, 0.9, 20, 5)
   g3 <- simplify(g3)
   invisible(capture.output(
     m3 <- sbm(g3, n.moves = 1, n.sweeps = 0)
