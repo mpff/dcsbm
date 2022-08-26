@@ -23,9 +23,9 @@ set.seed(2022)
 
 ```{r, eval = FALSE, echo = FALSE}
 results <- bench::press(
-  Nsize = c(10, 100, 300),
+  Nsize = c(10, 25, 50, 75, 100),
   {
-    G <- sample_ppm2(Nsize, c=0.9, k=10, B=3)
+    G <- sample_ppm(Nsize, c=0.9, k=10, B=3)
     G <- simplify(G)
     G <- delete.vertices(G, degree(G) == 0)
     p <- sample(1:3, Nsize, replace = TRUE)
@@ -33,7 +33,7 @@ results <- bench::press(
       min_iterations = 5,
       entropy = get_entropy(G, p),
       mcmc_sweep = mcmc_single_sweep(G, p, 3),
-      agglom_merge = invisible(capture.output(sbm(G, n.moves=1, n.sweeps=0))),
+      agglomerative_merge = invisible(capture.output(sbm(G, n.moves=1, n.sweeps=0))),
       check = FALSE
     )
   }
@@ -49,17 +49,17 @@ results
 
 ```{r, eval = FALSE, echo = FALSE}
 # Initialize graph and a random starting partition
-Nsize = 60
-G <- sample_ppm2(Nsize, c = 0.9, k = 10, B = 3)
+Nsize = 100
+G <- sample_ppm(Nsize, c = 0.9, k = 10, B = 3)
 G <- simplify(G)
 G <- delete.vertices(G, degree(G) == 0)
 
 # Number of mcmcm sweeps
-Niter = 50
+Niter = 100
 start_partition <- sample(1:3, size = Nsize, replace = TRUE)
 
 # Perform Niter mcmc sweeps
-result <- mcmc_sweep(G, start_partition, 3, n.sweeps = 50)
+result <- mcmc_sweep(G, start_partition, 3, n.sweeps = Niter)
 
 # Visualize start/end partition and entropy delta.
 plot(G, vertex.color = start_partition, vertex.label = NA)
@@ -71,13 +71,28 @@ plot(G, vertex.color = result$best_partition, vertex.label = NA)
 #### 2. Agglomerative Merge
 
 ```{r, eval = FALSE, echo = FALSE}
-G <- sample_ppm2(300, 0.95, 10, 6)
+G <- sample_ppm(100, 0.9, 10, 3)
 G <- simplify(G)
 
-model <- sbm(G, n.sweeps = 0)
+model <- sbm(G, n.sweeps = 1)
  
 for (p in model$partitions) {
   plot(G, vertex.color = p, vertex.label = NA)
 }
-plot(model$block_sequence, model$entropy_delta, type = "line")
+plot(model$block_sequence[-1], model$entropy_delta[-1], type = "line")
+```
+
+### 3. Degree correction
+
+```{r, eval = FALSE, echo = FALSE}
+G <- sample_dcppm(100, 0.9, 10, 3, k_coef = 2)
+G <- simplify(G)
+
+model <- sbm(G, n.sweeps = 1)
+ 
+for (p in model$partitions) {
+  plot(G, vertex.color = p, vertex.label = NA)
+}
+plot(model$block_sequence[-1], model$entropy_delta[-1], type = "line")
+plot(G, vertex.color = c(rep(1,34), rep(2,33), rep(3,33)), vertex.label = NA, sub = "True partition")
 ```
