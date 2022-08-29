@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{block_degree_sequence}
 \alias{block_degree_sequence}
-\title{Sequence of effective degrees per block.}
+\title{Sequence of relative degrees per block.}
 \usage{
 block_degree_sequence(graph, partition, n.blocks = NULL)
 }
@@ -15,5 +15,5 @@ block_degree_sequence(graph, partition, n.blocks = NULL)
 number of individual group id's in partition by default.}
 }
 \description{
-Sequence of effective degrees per block.
+Sequence of relative degrees per block.
 }

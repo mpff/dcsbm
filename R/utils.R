@@ -52,7 +52,7 @@ block_node_counts <- function(partition, n.blocks = NULL) {
 }
 
 
-#' Sequence of effective degrees per block.
+#' Sequence of relative degrees per block.
 #'
 #' @param graph An igraph graph.
 #' @param partition A vector of group id's for each node of graph.
@@ -61,17 +61,85 @@ block_node_counts <- function(partition, n.blocks = NULL) {
 #' @import igraph
 
 block_degree_sequence <- function(graph, partition, n.blocks = NULL) {
-  stopifnot(length(graph) == length(partition))
-  degree_sequence <- degree(graph)
-  block_degree_sums <- tapply(degree_sequence, partition, FUN=sum)
-  effective_degree_sequence <- sapply(seq_along(degree_sequence), function(i){
-    deg <- degree_sequence[i]
-    par <- partition[i]
-    block_deg_sum <- block_degree_sums[par]
-    deg/block_deg_sum
-  })
-  as.vector(effective_degree_sequence)
+
+  if (!is.directed(graph)) {
+
+    # Build degree sequence and get total degrees per block.
+    degree_sequence <- degree(graph)
+    block_degree_sums <- tapply(degree_sequence, partition, FUN=sum)
+
+    # Check optional params
+    if(is.null(n.blocks)){
+      n.blocks <- max(names(block_degree_sums))
+    }
+
+    # Check if there are blocks that have no associated vertices and insert them.
+    if(n.blocks != dim(block_degree_sums)){
+      miss.blocks <- which(!1:n.blocks %in% dimnames(block_degree_sums)[[1]])
+      for(block in miss.blocks) block_degree_sums <- append(block_degree_sums, 0, after = block - 1)
+    }
+
+    # Calcualte the relative degrees per block.
+    relative_degree_sequence <- sapply(seq_along(degree_sequence), function(i){
+      deg <- degree_sequence[i]
+      par <- partition[i]
+      block_deg_sum <- block_degree_sums[par]
+      deg/block_deg_sum
+    })
+    relative_degree_sequence <- as.vector(relative_degree_sequence)
+
+    #Bind to list and return.
+    relative_degree_sequence = list(total = relative_degree_sequence)
+
+  } else {
+
+    # Build in/out degree sequences and get total degrees per block.
+    out_degree_sequence <- degree(graph, mode = "out")
+    in_degree_sequence <- degree(graph, mode = "in")
+    out_block_degree_sums <- tapply(out_degree_sequence, partition, FUN=sum)
+    in_block_degree_sums <- tapply(in_degree_sequence, partition, FUN=sum)
+
+    # Check optional params
+    if(is.null(n.blocks)){
+      n.blocks <- max(names(out_block_degree_sums))
+    }
+
+    # Check if there are blocks that have no associated vertices and insert them.
+    if(n.blocks != dim(out_block_degree_sums)){
+      miss.blocks <- which(!1:n.blocks %in% dimnames(out_block_degree_sums)[[1]])
+      for(block in miss.blocks) out_block_degree_sums <- append(out_block_degree_sums, 0, after = block - 1)
+    }
+    if(n.blocks != dim(in_block_degree_sums)){
+      miss.blocks <- which(!1:n.blocks %in% dimnames(in_block_degree_sums)[[1]])
+      for(block in miss.blocks) in_block_degree_sums <- append(in_block_degree_sums, 0, after = block - 1)
+    }
+
+    # Calcualte the relative degrees per block.
+    out_relative_degree_sequence <- sapply(seq_along(out_degree_sequence), function(i){
+      deg <- out_degree_sequence[i]
+      par <- partition[i]
+      block_deg_sum <- out_block_degree_sums[par]
+      deg/block_deg_sum
+    })
+    out_relative_degree_sequence <- as.vector(out_relative_degree_sequence)
+    in_relative_degree_sequence <- sapply(seq_along(in_degree_sequence), function(i){
+      deg <- in_degree_sequence[i]
+      par <- partition[i]
+      block_deg_sum <- in_block_degree_sums[par]
+      deg/block_deg_sum
+    })
+    in_relative_degree_sequence <- as.vector(in_relative_degree_sequence)
+
+    # Bind to list and return.
+    relative_degree_sequence <- list("outdegree" = out_relative_degree_sequence, "indegree" = in_relative_degree_sequence)
+
+  }
+
+  relative_degree_sequence
 }
+
+
+
 
 #' Binary entropy function
 #'

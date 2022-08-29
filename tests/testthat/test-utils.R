@@ -53,7 +53,24 @@ test_that("Calculating effective degree sequence works", {
   g1 <- sample_ppm(30, 0.5, 10, 3)
   p1 <- sample_at_least_once(1:3, 30)
   ds1 <- block_degree_sequence(g1, p1)
-  expect_equal(sum(ds1), 3)
+  expect_equal(sum(ds1$total), 3)
+
+  g2 <- make_full_graph(4)
+  p2 <- c(1,3,4,4)
+  ds2 <- block_degree_sequence(g2, p2)
+  expect_equal(ds2$total, c(1, 1, 0.5, 0.5))
+
+  g3 <- sample_ppm(30, 0.5, 10, 3, directed = TRUE)
+  p3 <- sample_at_least_once(1:3, 30)
+  ds3 <- block_degree_sequence(g3, p3)
+  expect_equal(sum(ds3$outdegree), 3)
+  expect_equal(sum(ds3$indegree), 3)
+
+  g4 <- make_ring(4, directed = TRUE)
+  p4 <- c(1,1,2,2)
+  ds4 <- block_degree_sequence(g4, p4)
+  expect_equal(ds4$outdegree, c(0.5, 0.5, 0.5, 0.5))
+  expect_equal(ds4$indegree, c(0.5, 0.5, 0.5, 0.5))
 })
 
 
