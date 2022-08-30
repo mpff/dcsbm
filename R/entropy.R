@@ -36,7 +36,11 @@ get_entropy <- function (graph, partition, degree_correction = FALSE)
     S <- entropy_trad(E, n, directed = is.directed(graph))
   } else {
     E <- block_edge_counts(graph, partition)
-    d <- degree(graph)
+    if (!is.directed(graph)) {
+      d <- list("total" = degree(graph))
+    } else {
+      d <- list("in" = degree(graph, mode = "in"), "out" = degree(graph, mode = "out"))
+    }
     S <- entropy_corrected(E, d, directed = is.directed(graph))
   }
   S
@@ -73,6 +77,8 @@ entropy_trad <- function (E, n, directed = FALSE)
 #'
 #' Calculate the entropy associated with the current block partition.
 #'
+#' Undirected case:
+#'
 #' \deqn{
 #'   S_c = - E - \sum_k N_k \ln k! - \frac{1}{2} \sum_{rs} e_{rs} \ln\left(\frac{e_{rs}}{e_r e_s}\right)
 #' }{
@@ -81,27 +87,58 @@ entropy_trad <- function (E, n, directed = FALSE)
 #'
 #' @param E Integer matrix of edge counts associated with current partition.
 #' @param d Integer vector of node degrees.
-#' @param directed Whether graph is directed.
+#' @param directed Wether to calcualted directed entropy.
 #' @import igraph
 
 entropy_corrected <- function (E, d, directed = FALSE)
 {
-  # Calcualte part of entropy relating to total amount of edges
-  edge_entropy <- sum(E)/2
 
-  # Calculate part of entropy relating to different degrees
-  degree_unique <- sort(unique(d))
-  degree_counts <- table(d)
-  degree_entropy <- sum(degree_counts * log(factorial(degree_unique)))
+   if (!directed) {
 
-  # Calculate part of entropy relating to block edge counts
-  e <- colSums(E)
-  Eee <- (E / e) %*% diag(1/e, nrow = length(e))
-  block_edges_entropy <- 0.5 * sum(E * log(Eee))
+    # Calcualte part of entropy relating to total amount of edges
+    edge_entropy <- sum(E)/2  # /2 because of undirected edges
 
-  # Add everything together
-  S <- - edge_entropy - degree_entropy - block_edges_entropy
-  if(directed) stop("Entropy for these parameters not yet implemented.")
+    d <- d$total
+
+    # Calculate part of entropy relating to different degrees
+    degree_unique <- sort(unique(d))
+    degree_counts <- table(d)
+    degree_entropy <- sum(degree_counts * log(factorial(degree_unique)))
+
+    # Calculate part of entropy relating to block edge counts
+    e <- colSums(E)
+    Eee <- (E / e) %*% diag(1/e, nrow = length(e))
+    block_edges_entropy <- 0.5 * sum(E * log(Eee), na.rm = TRUE)
+
+    # Add everything together
+    S <- - edge_entropy - degree_entropy - block_edges_entropy
+
+  } else {
+
+    # Calcualte part of entropy relating to total amount of edges
+    edge_entropy <- sum(E)
+
+    d_in <- d$`in`
+    d_ou <- d$out
+
+    # Calculate part of entropy relating to different degrees
+    degree_in_unique <- sort(unique(d_in))
+    degree_in_counts <- table(d_in)
+    degree_in_entropy <- sum(degree_in_counts * log(factorial(degree_in_unique)))
+    degree_ou_unique <- sort(unique(d_ou))
+    degree_ou_counts <- table(d_ou)
+    degree_ou_entropy <- sum(degree_ou_counts * log(factorial(degree_ou_unique)))
+
+    # Calculate part of entropy relating to block edge counts
+    e_in <- colSums(E)
+    e_ou <- rowSums(E)
+    Eee <- (E / e_in) %*% diag(1/e_ou, nrow = length(e_ou))
+    block_edges_entropy <- sum(E * log(Eee), na.rm = TRUE)
+
+    # Add everything together
+    S <- - edge_entropy - degree_in_entropy - degree_ou_entropy - block_edges_entropy
+
+  }
 
   as.numeric(S)
 }

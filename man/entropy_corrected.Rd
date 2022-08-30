@@ -11,12 +11,14 @@ entropy_corrected(E, d, directed = FALSE)
 
 \item{d}{Integer vector of node degrees.}
 
-\item{directed}{Whether graph is directed.}
+\item{directed}{Wether to calcualted directed entropy.}
 }
 \description{
 Calculate the entropy associated with the current block partition.
 }
 \details{
+Undirected case:
+
 \deqn{
   S_c = - E - \sum_k N_k \ln k! - \frac{1}{2} \sum_{rs} e_{rs} \ln\left(\frac{e_{rs}}{e_r e_s}\right)
 }{
