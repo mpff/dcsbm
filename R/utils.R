@@ -139,14 +139,13 @@ block_degree_sequence <- function(graph, partition, n.blocks = NULL) {
 }
 
 
-
-
 #' Binary entropy function
 #'
 #' @param x Numeric, vector or matrix with numbers between 0 and 1.
 
-H_binary <- function (x)
+H_binary <- function (x, na.rm = FALSE)
 {
+  if (na.rm) x[is.na(x)] <- 0
   stopifnot(0 <= x & x <= 1)
   H <- - x * log(x) - (1 - x) * log(1 - x)
   replace(H, is.na(H), 0)
