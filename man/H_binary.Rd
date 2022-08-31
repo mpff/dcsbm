@@ -4,7 +4,7 @@
 \alias{H_binary}
 \title{Binary entropy function}
 \usage{
-H_binary(x)
+H_binary(x, na.rm = FALSE)
 }
 \arguments{
 \item{x}{Numeric, vector or matrix with numbers between 0 and 1.}
