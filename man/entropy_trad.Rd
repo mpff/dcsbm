@@ -4,7 +4,7 @@
 \alias{entropy_trad}
 \title{Entropy (no degree correction)}
 \usage{
-entropy_trad(E, n, directed = FALSE)
+entropy_trad(E, n, directed = FALSE, simple = TRUE)
 }
 \arguments{
 \item{E}{Integer matrix of edge counts associated with current partition}
@@ -12,6 +12,8 @@ entropy_trad(E, n, directed = FALSE)
 \item{n}{Integer vector of node counts associated with current partition}
 
 \item{directed}{Whether graph is directed}
+
+\item{simple}{Whether graph is simple.}
 }
 \description{
 Calculate the entropy associated with the current block partition.

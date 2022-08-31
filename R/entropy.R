@@ -16,13 +16,15 @@
 
 get_entropy <- function (graph, partition, degree_correction = FALSE)
 {
-  # Initial checks
-  stopifnot(is.igraph(graph))
+  # Parameters.
   partition <- as.integer(partition)
   degree_correction <- as.logical(degree_correction)
+
+  # Initial checks.
+  stopifnot(is.igraph(graph))
   stopifnot(length(graph) == length(partition))
 
-  # Add vertices with degree zero to first group.
+  # Add vertices with degree zero to first group. (TODO: Can this be removed?)
   zero.vertices <- which(degree(graph) == 0)
   partition[zero.vertices] <- 1
 
@@ -33,7 +35,7 @@ get_entropy <- function (graph, partition, degree_correction = FALSE)
   if(!degree_correction) {
     E <- block_edge_counts(graph, partition)
     n <- block_node_counts(partition)
-    S <- entropy_trad(E, n, directed = is.directed(graph))
+    S <- entropy_trad(E, n, directed = is.directed(graph), simple = is.simple(graph))
   } else {
     E <- block_edge_counts(graph, partition)
     if (!is.directed(graph)) {
@@ -56,18 +58,25 @@ get_entropy <- function (graph, partition, degree_correction = FALSE)
 #' @param E Integer matrix of edge counts associated with current partition
 #' @param n Integer vector of node counts associated with current partition
 #' @param directed Whether graph is directed
+#' @param simple Whether graph is simple.
 #' @import igraph
 
-entropy_trad <- function (E, n, directed = FALSE)
+entropy_trad <- function (E, n, directed = FALSE, simple = TRUE)
 {
   if(any(n == 0)){
     miss.blocks <- which(n == 0)
     E <- E[-miss.blocks, -miss.blocks]
     n <- n[-miss.blocks]
   }
-  Enn <- (E / n) %*% diag(1/n, nrow = length(n))
-  Hmat <- H_binary(Enn)
-  S <- .5 * matrix(n, nrow = 1) %*% Hmat %*% matrix(n)
+  if (simple) {
+    Enn <- (E / n) %*% diag(1/n, nrow = length(n))
+    Hmat <- H_binary(Enn)
+    S <- .5 * matrix(n, nrow = 1) %*% Hmat %*% matrix(n)
+  } else {
+    nn <- n %*% t(n)
+    Hmat <- H_binary(nn/(nn + E))
+    S <- .5 * sum((nn + E) * Hmat)
+  }
   if(directed) S <- 2 * S
   as.numeric(S)
 }
@@ -104,6 +113,7 @@ entropy_corrected <- function (E, d, directed = FALSE)
     degree_unique <- sort(unique(d))
     degree_counts <- table(d)
     degree_entropy <- sum(degree_counts * log(factorial(degree_unique)))
+    # TODO: Check if a factor "degree_unique" is missing here?!
 
     # Calculate part of entropy relating to block edge counts
     e <- colSums(E)
