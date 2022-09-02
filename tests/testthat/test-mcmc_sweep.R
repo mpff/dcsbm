@@ -1,3 +1,20 @@
+test_that("MCMC sweeps PPM example works", {
+  Nsize <- 10
+  G <- sample_ppm(Nsize, c = 0.9, k = 10, B = 3)
+  p <- c(rep(1, 0.3*Nsize), rep(2, 0.5*Nsize), rep(3, 0.2*Nsize))
+  expect_error(mcmc_sweep(G, p, 3, n.sweeps = 2), NA)
+
+  G2 <- sample_ppm(Nsize, c = 0.9, k = 10, B = 3, directed = TRUE)
+  expect_error(mcmc_sweep(G2, p, 3, n.sweeps = 2), NA)
+
+  G3 <- sample_ppm(Nsize, c = 0.9, k = 10, B = 3, directed = TRUE, loops = TRUE)
+  expect_error(mcmc_sweep(G3, p, 3, n.sweeps = 2), NA)
+
+  G4 <- sample_ppm(Nsize, c = 0.9, k = 10, B = 3, directed = TRUE, loops = TRUE)
+  expect_error(mcmc_sweep(G4, p, 3, dc = TRUE, n.sweeps = 2), NA)
+})
+
+
 test_that("Making an multiple MCMC sweeps works", {
   g1 <- make_full_graph(4, directed=FALSE, loops=FALSE)
   p1 <- c(rep(1,2), rep(2,2))
@@ -9,18 +26,6 @@ test_that("Making an multiple MCMC sweeps works", {
 })
 
 
-test_that("MCMC sweeps PPM2 example works", {
-  Nsize <- 10
-  G <- sample_ppm(Nsize, c = 0.9, k = 10, B = 3)
-  p <- c(rep(1, 0.3*Nsize), rep(2, 0.5*Nsize), rep(3, 0.2*Nsize))
-
-  expect_error(mcmc_sweep(G, p, 3, n.sweeps = 2), class = "simpleError")
-
-  G <- simplify(G)
-  expect_error(mcmc_sweep(G, p, 3, n.sweeps = 2), NA)
-})
-
-
 test_that("Making an single MCMC sweep works", {
   g1 <- make_full_graph(4, directed=FALSE, loops=FALSE)
   p1 <- c(rep(1,2), rep(2,2))
@@ -29,18 +34,6 @@ test_that("Making an single MCMC sweep works", {
   g4 <- make_empty_graph(4, directed=FALSE)
   p4 <- c(rep(1,2), rep(2,2))
   expect_error(mcmc_single_sweep(g4, p4, 2))
-})
-
-
-test_that("Single MCMC sweep PPM2 example works", {
-  Nsize <- 10
-  G <- sample_ppm(Nsize, c = 0.9, k = 10, B = 3)
-  p <- c(rep(1, 0.3*Nsize), rep(2, 0.5*Nsize), rep(3, 0.2*Nsize))
-
-  expect_error(mcmc_single_sweep(G, p, 3), class = "simpleError")
-
-  G <- simplify(G)
-  expect_error(mcmc_single_sweep(G, p, 3), NA)
 })
 
 
@@ -73,7 +66,54 @@ test_that("Can calculate proposal results", {
 })
 
 
+test_that("Can calculate proposal results for directed, weighted, looped graph", {
+  g1 <- make_full_graph(3, directed = TRUE, loops = TRUE)
+  p1 <- c(1,1,2)
+  S1 <- get_entropy(g1, p1)
+  el1 <- block_edge_list(g1, p1, 2)
+
+  # Change to equivalent partition.
+  res1 <- get_proposal_results(1, 2, S1, g1, p1, el1, eps = 1, beta = 1)
+  exp1 <- list("entropy_delta" = 0, "prob_to_accept" = 1, "new_entropy" = S1)
+  expect_equal(res1, exp1)
+
+  # Actual change to worse partition.
+  res2 <- get_proposal_results(3, 1, S1, g1, p1, el1, eps = 1, beta = 1)
+  exp2.dS <- 0
+  #exp2.pta <- min(exp(-exp2.dS) * (1/8) / (1/2), 1)
+  exp2.newS <-  (9 + 9) * H_binary(9/(9+9))
+  exp2 <- list(
+    "entropy_delta" = exp2.dS,
+    "prob_to_accept" = NULL,
+    "new_entropy" = exp2.newS)
+  expect_equal(res2$entropy_delta, exp2$entropy_delta)
+  expect_equal(res2$new_entropy, exp2$new_entropy)
+
+  # No change.
+  res3 <- get_proposal_results(1, 1, S1, g1, p1, el1, eps = 1, beta = 1)
+  exp3 <- list("entropy_delta" = 0, "prob_to_accept" = 1, "new_entropy" = S1)
+  expect_equal(res3, exp3)
+})
+
+
+
 test_that("creating block edge list works", {
+  g1 <- make_ring(3)
+  p1 <- c(1,2,3)
+  bel1 <- block_edge_list(g1, p1)
+  check <- sapply(seq_along(bel1), function(b){
+    bel1[[b]] == as_ids(incident(g1, b))
+  })
+  expect_true(any(check))
+
+  g2 <- make_full_graph(3)
+  p2 <- c(1,1,2)
+  bel2 <- block_edge_list(g2, p2)
+  expect_equal(bel2[[1]], c(1, 2, 3))
+  expect_equal(bel2[[2]], c(2, 3))
+})
+
+test_that("creating block edge list works for looped directed graphs", {
   g1 <- make_ring(3)
   p1 <- c(1,2,3)
   bel1 <- block_edge_list(g1, p1)

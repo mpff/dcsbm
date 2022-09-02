@@ -213,12 +213,16 @@ get_proposal_results <- function(curr_v, proposed_new_block,
     pti <- sum(vertex_neighborhood_block_memberships == t)/vertex_neighborhood_size
 
     # Calculated after move
-    prob_return_to_old <- prob_return_to_old + pti *
-      ( (1-new_Rt[t]) * new_edge_matrix[t,old_block] / new_edge_counts[t]  + new_Rt[t]/length(new_edge_counts))
+    if( new_edge_counts[t] != 0 ) {
+      prob_return_to_old <- prob_return_to_old + pti *
+        ( (1-new_Rt[t]) * new_edge_matrix[t,old_block] / new_edge_counts[t]  + new_Rt[t]/length(new_edge_counts))
+    }
 
     # Calculated before move
-    prob_move_to_new <- prob_move_to_new + pti *
-      ( (1-old_Rt[t]) * old_edge_matrix[t,proposed_new_block] / old_edge_counts[t]  + old_Rt[t]/length(old_edge_counts))
+    if( old_edge_counts[t] != 0 ) {
+      prob_move_to_new <- prob_move_to_new + pti *
+        ( (1-old_Rt[t]) * old_edge_matrix[t,proposed_new_block] / old_edge_counts[t]  + old_Rt[t]/length(old_edge_counts))
+    }
   }
 
   prob_ratio <- prob_return_to_old/prob_move_to_new
