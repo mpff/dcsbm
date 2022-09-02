@@ -8,6 +8,8 @@ H_binary(x, na.rm = FALSE)
 }
 \arguments{
 \item{x}{Numeric, vector or matrix with numbers between 0 and 1.}
+
+\item{na.rm}{If TRUE, replace NA values with 0, instead of failing.}
 }
 \description{
 Binary entropy function

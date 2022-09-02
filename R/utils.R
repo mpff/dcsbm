@@ -142,6 +142,7 @@ block_degree_sequence <- function(graph, partition, n.blocks = NULL) {
 #' Binary entropy function
 #'
 #' @param x Numeric, vector or matrix with numbers between 0 and 1.
+#' @param na.rm If TRUE, replace NA values with 0, instead of failing.
 
 H_binary <- function (x, na.rm = FALSE)
 {

@@ -16,6 +16,8 @@ sbm(
 \arguments{
 \item{graph}{An igraph graph.}
 
+\item{degree_correction}{Whether to use degree correction.}
+
 \item{n.blocks}{Number of blocks.}
 
 \item{n.moves}{Number of merge trials per block.}
@@ -33,8 +35,6 @@ Estimate a ...
 \examples{
 ## Three groups with weighted connections.
 g1 <- sample_ppm(60, 0.9, 10, 3)
-g1 <- simplify(g1)
-g1 <- delete.vertices(g1, degree(g1) == 0)
 model <- sbm(g1)
 }
 \keyword{block}

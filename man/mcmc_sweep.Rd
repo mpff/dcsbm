@@ -14,6 +14,8 @@ of each vertex}
 
 \item{B}{Number of blocks.}
 
+\item{dc}{Wether to use degree correction.}
+
 \item{n.sweeps}{Number of sweeps to run.}
 
 \item{eps}{(optional) A number giving the ...}

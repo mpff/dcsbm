@@ -3,6 +3,7 @@
 #' Estimate a ...
 #'
 #' @param graph An igraph graph.
+#' @param degree_correction Whether to use degree correction.
 #' @param n.blocks Number of blocks.
 #' @param n.moves Number of merge trials per block.
 #' @param n.sweeps Number of sweeps after block merge.
@@ -12,12 +13,9 @@
 #' @examples
 #' ## Three groups with weighted connections.
 #' g1 <- sample_ppm(60, 0.9, 10, 3)
-#' g1 <- simplify(g1)
-#' g1 <- delete.vertices(g1, degree(g1) == 0)
 #' model <- sbm(g1)
 #' @export
 #' @import igraph
-#' @importFrom utils setTxtProgressBar txtProgressBar
 
 sbm <- function (graph, degree_correction = FALSE, n.blocks = c(1, Inf),
                  n.moves = 10, n.sweeps = 0,

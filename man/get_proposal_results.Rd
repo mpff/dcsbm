@@ -35,6 +35,8 @@ vertex pre move.}
 \item{eps}{(optional) A number giving the ...}
 
 \item{beta}{(optional) A number giving the greediness of the moves.}
+
+\item{dc}{Wether to use degree correction.}
 }
 \value{
 A new group membership for vertex.

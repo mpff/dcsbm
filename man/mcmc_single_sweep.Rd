@@ -14,6 +14,8 @@ vertex}
 
 \item{B}{Number of blocks.}
 
+\item{dc}{Wether to use degree correction.}
+
 \item{eps}{(optional) A number giving the ...}
 
 \item{beta}{(optional) A number giving the greediness of the moves.}

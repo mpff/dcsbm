@@ -1,5 +1,18 @@
-
-
+#' Stochastic block model
+#'
+#' Estimate a ...
+#'
+#' @param graph An igraph graph.
+#' @param partition An vector of integers giving the block partition of nodes.
+#' @param degree_correction Whether to use degree correction.
+#' @param n.merges Number of block merges in collapse step.
+#' @param n.moves Number of merge trials per block.
+#' @param n.sweeps Number of sweeps after block merge.
+#' @param eps A parameter controlling ...
+#' @param beta A parameter controlling ....
+#' @param verbose Wether to print verbose output to console.
+#' @import igraph
+#' @importFrom utils setTxtProgressBar txtProgressBar
 
 collapse_step <- function(graph, partition, degree_correction = FALSE,
                           n.merges = 1, n.moves = 10, n.sweeps = 0,
@@ -40,7 +53,7 @@ collapse_step <- function(graph, partition, degree_correction = FALSE,
   # Init Progressbar
   if(verbose) {
     pbmessage <- paste("  [", B.start, "->", B.start - n.merges, "blocks ]")
-    pbwidth <- getOption("width") - nchar(pbmessage) - 4
+    pbwidth <- min(80, getOption("width")) - nchar(pbmessage) - 4
     pb = txtProgressBar(min = 0, max = B.start * n.moves, width = pbwidth,
                         initial = 0, style = 3)
     cat(pbmessage)

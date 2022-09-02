@@ -8,6 +8,7 @@
 #' @param p Vector of integer values giving the initial block membership
 #' of each vertex
 #' @param B Number of blocks.
+#' @param dc Wether to use degree correction.
 #' @param n.sweeps Number of sweeps to run.
 #' @param eps (optional) A number giving the ...
 #' @param beta (optional) A number giving the greediness of the moves.
@@ -61,6 +62,7 @@ mcmc_sweep <- function(G, p, B, dc = FALSE, n.sweeps = 1, eps = 0.1, beta = 1)
 #' @param p Vector of integer values giving the block membership of each
 #' vertex
 #' @param B Number of blocks.
+#' @param dc Wether to use degree correction.
 #' @param eps (optional) A number giving the ...
 #' @param beta (optional) A number giving the greediness of the moves.
 #' @return A new partition given as a vector of integer values.
@@ -165,6 +167,7 @@ propose_move <- function(curr_v, G, p, block.edges, eps = 1) {
 #' @param block.edges a list of all incident edge ids per block
 #' @param eps (optional) A number giving the ...
 #' @param beta (optional) A number giving the greediness of the moves.
+#' @param dc Wether to use degree correction.
 #' @return A new group membership for vertex.
 #' @import igraph
 
