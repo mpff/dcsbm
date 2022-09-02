@@ -46,7 +46,7 @@ library(dcsbm)
 
 # Generate graph by a planted partition model and estimate an sbm.
 g <- sample_dcppm(60, c=0.95, k=20, B=3, k_coef=1.5, directed=TRUE, loops=TRUE)
-m <- sbm(g, degree_correction=TRUE, n.sweeps=5)
+m <- sbm(g, degree_correction=TRUE, n.sweeps=5, verbose=FALSE)
 
 # Plot result for 3 blocks.
 plot(g, vertex.color = m$partition[[8]], vertex.label = NA)

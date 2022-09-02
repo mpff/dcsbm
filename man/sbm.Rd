@@ -10,6 +10,7 @@ sbm(
   n.blocks = c(1, Inf),
   n.moves = 10,
   n.sweeps = 0,
+  verbose = TRUE,
   control = list(sigma = 1.5, eps = 0.1, beta = 1, start_partition = NULL)
 )
 }
@@ -23,6 +24,8 @@ sbm(
 \item{n.moves}{Number of merge trials per block.}
 
 \item{n.sweeps}{Number of sweeps after block merge.}
+
+\item{verbose}{Wether to print verbose output during estimation.}
 
 \item{control}{List of parameters for the inference algorithm.}
 }

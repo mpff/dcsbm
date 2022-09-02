@@ -7,6 +7,7 @@
 #' @param n.blocks Number of blocks.
 #' @param n.moves Number of merge trials per block.
 #' @param n.sweeps Number of sweeps after block merge.
+#' @param verbose Wether to print verbose output during estimation.
 #' @param control List of parameters for the inference algorithm.
 #' @return Todo
 #' @keywords graphs, inference, stochastic block model, degree correction
@@ -18,7 +19,7 @@
 #' @import igraph
 
 sbm <- function (graph, degree_correction = FALSE, n.blocks = c(1, Inf),
-                 n.moves = 10, n.sweeps = 0,
+                 n.moves = 10, n.sweeps = 0, verbose = TRUE,
                  control = list(sigma = 1.5, eps = 0.1, beta = 1, start_partition = NULL))
 {
   # Initial graph checks
@@ -73,7 +74,7 @@ sbm <- function (graph, degree_correction = FALSE, n.blocks = c(1, Inf),
                                      degree_correction = degree_correction,
                                      n.merges = merges_iter[curr.iter],
                                      n.moves = n.moves, n.sweeps = n.sweeps,
-                                     eps = eps, beta = beta)
+                                     eps = eps, beta = beta, verbose = verbose)
     partition_iter[[curr.iter+1]] <- collapse_result$new_partition
     entropy_delta_iter <- append(entropy_delta_iter, collapse_result$entropy_delta/E)
   }
