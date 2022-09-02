@@ -4,7 +4,7 @@
 \alias{mcmc_sweep}
 \title{Run multiple MCMC sweep overs nodes}
 \usage{
-mcmc_sweep(G, p, B, n.sweeps = 1, eps = 0.1, beta = 1)
+mcmc_sweep(G, p, B, dc = FALSE, n.sweeps = 1, eps = 0.1, beta = 1)
 }
 \arguments{
 \item{G}{An igraph graph.}

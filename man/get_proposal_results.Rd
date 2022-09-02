@@ -14,7 +14,8 @@ get_proposal_results(
   old_partition,
   block.edges,
   eps = 0.1,
-  beta = 1
+  beta = 1,
+  dc = FALSE
 )
 }
 \arguments{

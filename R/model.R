@@ -19,12 +19,12 @@
 #' @import igraph
 #' @importFrom utils setTxtProgressBar txtProgressBar
 
-sbm <- function (graph, n.blocks = c(1, Inf), n.moves = 10, n.sweeps = 0,
+sbm <- function (graph, degree_correction = FALSE, n.blocks = c(1, Inf),
+                 n.moves = 10, n.sweeps = 0,
                  control = list(sigma = 1.5, eps = 0.1, beta = 1, start_partition = NULL))
 {
   # Initial graph checks
   stopifnot(is.igraph(graph))
-  stopifnot(is.simple(graph))
   stopifnot(all(degree(graph) > 0))
 
   # Initial parameter checks
@@ -58,7 +58,8 @@ sbm <- function (graph, n.blocks = c(1, Inf), n.moves = 10, n.sweeps = 0,
     start_partition <- sample_at_least_once(1:max.blocks, N)
   }
   start_partition <- check_partition(start_partition)
-  start_entropy <- get_entropy(graph, start_partition)/E
+  start_entropy <- get_entropy(graph, start_partition,
+                               degree_correction = degree_correction)/E
 
   # Bookkeeping
   entropy_delta_iter <- 0
@@ -71,6 +72,7 @@ sbm <- function (graph, n.blocks = c(1, Inf), n.moves = 10, n.sweeps = 0,
   # Loop trough all merges
   for(curr.iter in 1:length(merges_iter)) {
     collapse_result <- collapse_step(graph, partition_iter[[curr.iter]],
+                                     degree_correction = degree_correction,
                                      n.merges = merges_iter[curr.iter],
                                      n.moves = n.moves, n.sweeps = n.sweeps,
                                      eps = eps, beta = beta)

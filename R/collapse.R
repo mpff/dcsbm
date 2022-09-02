@@ -1,8 +1,11 @@
 
 
 
-collapse_step <- function(graph, partition, n.merges = 1, n.moves = 10, n.sweeps = 0, eps = 0.1, beta = 1)
+collapse_step <- function(graph, partition, degree_correction = FALSE,
+                          n.merges = 1, n.moves = 10, n.sweeps = 0,
+                          eps = 0.1, beta = 1, verbose = TRUE)
 {
+  degree_correction = as.logical(degree_correction)
   n.merges <- as.integer(n.merges)
   n.moves <- as.integer(n.moves)
   n.sweeps <- as.integer(n.sweeps)
@@ -32,14 +35,16 @@ collapse_step <- function(graph, partition, n.merges = 1, n.moves = 10, n.sweeps
   )
 
   # Start partition properties
-  old_entropy <- get_entropy(graph, partition)
+  old_entropy <- get_entropy(graph, partition, degree_correction)
 
   # Init Progressbar
-  pbmessage <- paste("  [", B.start, "->", B.start - n.merges, "blocks ]")
-  pbwidth <- getOption("width") - nchar(pbmessage) - 4
-  pb = txtProgressBar(min = 0, max = B.start * n.moves, width = pbwidth,
-                      initial = 0, style = 3)
-  cat(pbmessage)
+  if(verbose) {
+    pbmessage <- paste("  [", B.start, "->", B.start - n.merges, "blocks ]")
+    pbwidth <- getOption("width") - nchar(pbmessage) - 4
+    pb = txtProgressBar(min = 0, max = B.start * n.moves, width = pbwidth,
+                        initial = 0, style = 3)
+    cat(pbmessage)
+  }
 
   for (b in 1:B.start) {
     for (i in 1:n.moves) {
@@ -68,7 +73,7 @@ collapse_step <- function(graph, partition, n.merges = 1, n.moves = 10, n.sweeps
 
       # Calculate entropy delta for merge and place into results
       proposed_partition <- replace(partition, which(partition == b), proposed_merge)
-      proposed_entropy <- get_entropy(graph, proposed_partition)
+      proposed_entropy <- get_entropy(graph, proposed_partition, degree_correction)
       entropy_delta <- proposed_entropy - old_entropy
 
       # Place into results
@@ -76,9 +81,9 @@ collapse_step <- function(graph, partition, n.merges = 1, n.moves = 10, n.sweeps
       merge.results[merge.idx,] <- c(b, proposed_merge, entropy_delta)
 
     }
-    setTxtProgressBar(pb, b * i)
+    if (verbose) setTxtProgressBar(pb, b * i)
   }
-  close(pb)
+  if (verbose) close(pb)
 
   # Clean up merge.results
   if(any(merge.results$g1 == merge.results$g2)){
@@ -115,12 +120,12 @@ collapse_step <- function(graph, partition, n.merges = 1, n.moves = 10, n.sweeps
     n.merged <- n.merged + 1
   }
 
-  new_entropy_delta <- get_entropy(graph, new_partition) - old_entropy
+  new_entropy_delta <- get_entropy(graph, new_partition, degree_correction) - old_entropy
   new_partition <- check_partition(new_partition)
 
   # Perform mcmc sweeps to settle partition (costly)
   if (n.sweeps > 0) {
-    sweep_results <- mcmc_sweep(graph, new_partition, max(new_partition), n.sweeps, eps, beta)
+    sweep_results <- mcmc_sweep(graph, new_partition, max(new_partition), degree_correction, n.sweeps, eps, beta)
     new_partition <- sweep_results$best_partition
     new_entropy_delta <- new_entropy_delta + sweep_results$best_entropy_delta
     new_partition <- check_partition(new_partition)

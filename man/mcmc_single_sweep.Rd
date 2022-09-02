@@ -4,7 +4,7 @@
 \alias{mcmc_single_sweep}
 \title{Run a single MCMC sweep over nodes}
 \usage{
-mcmc_single_sweep(G, p, B, eps = 0.1, beta = 1)
+mcmc_single_sweep(G, p, B, dc = FALSE, eps = 0.1, beta = 1)
 }
 \arguments{
 \item{G}{An igraph graph.}

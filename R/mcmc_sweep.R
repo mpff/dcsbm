@@ -15,17 +15,17 @@
 #' @export
 #' @import igraph
 
-mcmc_sweep <- function(G, p, B, n.sweeps = 1, eps = 0.1, beta = 1)
+mcmc_sweep <- function(G, p, B, dc = FALSE, n.sweeps = 1, eps = 0.1, beta = 1)
 {
   # Initial checks
   stopifnot(is.igraph(G))
-  stopifnot(is.simple(G))
   stopifnot(all(degree(G) > 0))
 
   B <- as.integer(B)
   p <- as.integer(p)
+  ds <- as.logical(dc)
 
-  old_entropy <- get_entropy(G, p)
+  old_entropy <- get_entropy(G, p, dc)
 
   # Bookkeper variables
   entropy_delta <- rep(0, n.sweeps + 1)
@@ -35,7 +35,7 @@ mcmc_sweep <- function(G, p, B, n.sweeps = 1, eps = 0.1, beta = 1)
   best_entropy <- old_entropy
 
   for (i in 1:n.sweeps) {
-    sweep_results <- mcmc_single_sweep(G, new_partition, B, eps, beta)
+    sweep_results <- mcmc_single_sweep(G, new_partition, B, dc, eps, beta)
     entropy_delta[i+1] <- entropy_delta[i] + sweep_results$entropy_delta
     new_partition <- sweep_results$new_partition
     if (entropy_delta[i+1] < min(entropy_delta[1:i])) {
@@ -48,6 +48,7 @@ mcmc_sweep <- function(G, p, B, n.sweeps = 1, eps = 0.1, beta = 1)
        "best_entropy" = best_entropy, "new_partiton" = new_partition,
        "entropy_delta" = entropy_delta)
 }
+
 
 
 #' Run a single MCMC sweep over nodes
@@ -66,19 +67,19 @@ mcmc_sweep <- function(G, p, B, n.sweeps = 1, eps = 0.1, beta = 1)
 #' @export
 #' @import igraph
 
-mcmc_single_sweep <- function(G, p, B, eps = 0.1, beta = 1)
+mcmc_single_sweep <- function(G, p, B, dc = FALSE, eps = 0.1, beta = 1)
 {
   # Initial checks
   stopifnot(is.igraph(G))
-  stopifnot(is.simple(G))
   stopifnot(all(degree(G) > 0))
 
   B <- as.integer(B)
   p <- as.integer(p)
+  dc <- as.logical(dc)
 
   # Book keeper variables for this sweeps stats
   entropy_delta <- 0
-  old_entropy <- get_entropy(G, p)
+  old_entropy <- get_entropy(G, p, dc)
 
   # Keep a list of block adjacent edges
   block.edges <- block_edge_list(G, p, B)
@@ -96,7 +97,7 @@ mcmc_single_sweep <- function(G, p, B, eps = 0.1, beta = 1)
     # Calculate acceptance probability based on posterior changes
     proposal_results = get_proposal_results(curr_v, proposed_new_block,
                                             old_entropy, G, p, block.edges,
-                                            eps, beta)
+                                            eps, beta, dc = dc)
 
     # Make movement decision
     move_accepted = proposal_results$prob_to_accept > stats::runif(1)
@@ -169,7 +170,7 @@ propose_move <- function(curr_v, G, p, block.edges, eps = 1) {
 
 get_proposal_results <- function(curr_v, proposed_new_block,
                                  old_entropy, G, old_partition, block.edges,
-                                 eps = 0.1, beta = 1){
+                                 eps = 0.1, beta = 1, dc = FALSE){
 
   old_block <- old_partition[curr_v]
 
@@ -187,8 +188,18 @@ get_proposal_results <- function(curr_v, proposed_new_block,
 
   # Calculate new entropy (speed this up!)
   new_edge_matrix <- block_edge_counts(G, new_partition, n.blocks = length(block.edges))
-  new_node_counts <- block_node_counts(new_partition, n.blocks = length(block.edges))
-  new_entropy <- entropy_trad(new_edge_matrix, new_node_counts)
+  if(dc == FALSE) {
+    new_node_counts <- block_node_counts(new_partition, n.blocks = length(block.edges))
+    new_entropy <- entropy_trad(new_edge_matrix, new_node_counts, is.directed(G), is.simple(G))
+  } else {
+    # TODO: Fix degree!
+    if (!is.directed(G)) {
+      d <- list("total" = degree(G))
+    } else {
+      d <- list("in" = degree(G, mode = "in"), "out" = degree(G, mode = "out"))
+    }
+    new_entropy <- entropy_corrected(new_edge_matrix, d, directed = is.directed(G))
+  }
 
   entropy_delta <- new_entropy - old_entropy
 

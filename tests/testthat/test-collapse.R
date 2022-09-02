@@ -17,4 +17,6 @@ test_that("Can collapse one block", {
     cb3 <- collapse_step(g3, p3, n.merges = 2)
   ))
   expect_equal(max(cb3$new_partition), max(p3) - 2)
+
+  expect_error(collapse_step(g1, p1, TRUE, verbose=FALSE), NA)
 })

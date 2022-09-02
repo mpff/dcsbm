@@ -6,6 +6,7 @@
 \usage{
 sbm(
   graph,
+  degree_correction = FALSE,
   n.blocks = c(1, Inf),
   n.moves = 10,
   n.sweeps = 0,
