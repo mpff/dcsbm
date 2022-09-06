@@ -1,5 +1,20 @@
+#' Description length of a block partition
+#'
+#' Calculate the description length associated with the current block partition
+#' and type of degree correction. Can be used with directed and undirected graphs.
+#'
+#' @param graph An igraph graph.
+#' @param partition Vector of integer values giving the block membership of each
+#' vertex
+#' @param degree_correction Type of degree correction to use. "oneway" for one
+#' parameter per vertex, "twoway" for two parameters per vertex (input/output),
+#' "none" for no degree correction.
+#' @return Description length value (numeric) for the given graph and partition.
+#' @keywords graphs, inference, stochastic block model, degree correction
+#' @export
+#' @import igraph
 
-calculate_mdl <- function(graph, partition, degree_correction = FALSE) {
+calculate_dl <- function(graph, partition, degree_correction = FALSE) {
   # Initial checks
   stopifnot(is.igraph(graph))
   partition <- check_partition(partition)
