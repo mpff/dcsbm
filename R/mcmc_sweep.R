@@ -39,12 +39,13 @@ mcmc_sweep <- function(G, p, B, dc = FALSE, n.sweeps = 1, eps = 0.1, beta = 1)
     sweep_results <- mcmc_single_sweep(G, new_partition, B, dc, eps, beta)
     entropy_delta[i+1] <- entropy_delta[i] + sweep_results$entropy_delta
     new_partition <- sweep_results$new_partition
-    if (entropy_delta[i+1] < min(entropy_delta[1:i])) {
-      best_partition <- new_partition
-      best_entropy_delta <- entropy_delta[i+1]
-      best_entropy <- sweep_results$new_entropy
+    if (sweep_results$best_entropy < best_entropy) {
+      best_partition <- sweep_results$best_partition
+      best_entropy_delta <- sweep_results$best_entropy_delta
+      best_entropy <- sweep_results$best_entropy
     }
   }
+
   list("best_partition" = best_partition, "best_entropy_delta" = best_entropy_delta,
        "best_entropy" = best_entropy, "new_partiton" = new_partition,
        "entropy_delta" = entropy_delta)
@@ -83,6 +84,12 @@ mcmc_single_sweep <- function(G, p, B, dc = FALSE, eps = 0.1, beta = 1)
   entropy_delta <- 0
   old_entropy <- get_entropy(G, p, dc)
 
+  # Book keeper variable for best state
+  original_entropy <- old_entropy
+  best_entropy_delta <- 0
+  best_entropy <- old_entropy
+  best_partition <- p
+
   # Keep a list of block adjacent edges
   block.edges <- block_edge_list(G, p, B)
 
@@ -109,9 +116,16 @@ mcmc_single_sweep <- function(G, p, B, dc = FALSE, eps = 0.1, beta = 1)
       entropy_delta <- entropy_delta + proposal_results$entropy_delta
       old_entropy <- proposal_results$new_entropy
       block.edges <- update_block_edge_list(block.edges, curr_v, G, proposed_new_block, old_block)
+
+      if (old_entropy < best_entropy) {
+        best_partition <- p
+        best_entropy_delta <- entropy_delta
+        best_entropy <- old_entropy
+      }
     }
   }
-  list("new_partition" = p, "entropy_delta" = entropy_delta, "new_entropy" = old_entropy)
+  list("new_partition" = p, "entropy_delta" = entropy_delta, "new_entropy" = old_entropy,
+       "best_partition" = best_partition, "best_entropy_delta" = best_entropy_delta, "best_entropy" = best_entropy)
 }
 
 

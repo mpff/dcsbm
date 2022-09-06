@@ -28,7 +28,7 @@ collapse_step <- function(graph, partition, degree_correction = FALSE,
 
   if(B.start - n.merges < 1){
     warning(paste("Cannot merge", B.start, "blocks", n.moves, "time(s). Skipping merge."))
-    return(list("new_partition" = partition, "g1" = NA, "g2" = NA, "entropy_delta" = 0))
+    return(list("new_partition" = partition, "g1" = NA, "g2" = NA, "entropy_delta" = 0, "description_length" = NA))
   }
 
   # Block graph
@@ -53,7 +53,7 @@ collapse_step <- function(graph, partition, degree_correction = FALSE,
   # Init Progressbar
   if(verbose) {
     pbmessage <- paste("  [", B.start, "->", B.start - n.merges, "blocks ]")
-    pbwidth <- min(80, getOption("width")) - nchar(pbmessage) - 4
+    pbwidth <- min(72, getOption("width")) - nchar(pbmessage) - 4
     pb = txtProgressBar(min = 0, max = B.start * n.moves, width = pbwidth,
                         initial = 0, style = 3)
     cat(pbmessage)
@@ -133,7 +133,8 @@ collapse_step <- function(graph, partition, degree_correction = FALSE,
     n.merged <- n.merged + 1
   }
 
-  new_entropy_delta <- get_entropy(graph, new_partition, degree_correction) - old_entropy
+  new_entropy <- get_entropy(graph, new_partition, degree_correction)
+  new_entropy_delta <- new_entropy - old_entropy
   new_partition <- check_partition(new_partition)
 
   # Perform mcmc sweeps to settle partition (costly)
@@ -141,8 +142,12 @@ collapse_step <- function(graph, partition, degree_correction = FALSE,
     sweep_results <- mcmc_sweep(graph, new_partition, max(new_partition), degree_correction, n.sweeps, eps, beta)
     new_partition <- sweep_results$best_partition
     new_entropy_delta <- new_entropy_delta + sweep_results$best_entropy_delta
+    new_entropy <- sweep_results$best_entropy
     new_partition <- check_partition(new_partition)
   }
 
-  list("new_partition" = new_partition, "entropy_delta" = new_entropy_delta)
+  description_length = calculate_dl(graph, new_partition, degree_correction = degree_correction)
+
+  list("new_partition" = new_partition, "entropy_delta" = new_entropy_delta, "new_entropy" = new_entropy,
+       "description_length" = description_length)
 }

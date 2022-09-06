@@ -43,28 +43,13 @@ library(dcsbm)
 #> The following object is masked from 'package:base':
 #> 
 #>     union
-#> 
-#> Attaching package: 'dcsbm'
-#> The following object is masked from 'package:igraph':
-#> 
-#>     sbm
 
 # Generate graph by a planted partition model and estimate an sbm.
-g <- sample_dcppm(60, c=0.95, k=20, B=3, k_coef=1.5, directed=TRUE, loops=TRUE)
-m <- sbm(g, degree_correction=TRUE, n.sweeps=5, verbose=FALSE)
+g <- sample_dcppm(60, c=0.9, k=20, B=3, k_coef=1.5, directed=TRUE, loops=TRUE)
+m <- dcsbm(g, degree_correction=TRUE, n.sweeps=5, verbose=FALSE)
 
 # Plot result for 3 blocks.
-plot(g, vertex.color = m$partition[[8]], vertex.label = NA)
+plot(g, vertex.color = m$best_partition, vertex.label = NA, sub = "Estimated partition")
 ```
 
 <img src="man/figures/README-example-1.png" width="66%" />
-
-``` r
-
-# Plot entropy delta by number of blocks.
-plot(m$block_sequence, m$entropy_delta, type = "line")
-#> Warning in plot.xy(xy, type, ...): plot type 'line' will be truncated to first
-#> character
-```
-
-<img src="man/figures/README-example-2.png" width="66%" />

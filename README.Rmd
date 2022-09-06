@@ -45,12 +45,9 @@ This is a basic example which shows you how to solve a common problem:
 library(dcsbm)
 
 # Generate graph by a planted partition model and estimate an sbm.
-g <- sample_dcppm(60, c=0.95, k=20, B=3, k_coef=1.5, directed=TRUE, loops=TRUE)
-m <- sbm(g, degree_correction=TRUE, n.sweeps=5, verbose=FALSE)
+g <- sample_dcppm(60, c=0.9, k=20, B=3, k_coef=1.5, directed=TRUE, loops=TRUE)
+m <- dcsbm(g, degree_correction=TRUE, n.sweeps=5, verbose=FALSE)
 
 # Plot result for 3 blocks.
-plot(g, vertex.color = m$partition[[8]], vertex.label = NA)
-
-# Plot entropy delta by number of blocks.
-plot(m$block_sequence, m$entropy_delta, type = "line")
+plot(g, vertex.color = m$best_partition, vertex.label = NA, sub = "Estimated partition")
 ```
