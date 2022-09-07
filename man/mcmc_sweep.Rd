@@ -14,19 +14,20 @@ of each vertex}
 
 \item{B}{Number of blocks.}
 
-\item{dc}{Wether to use degree correction.}
+\item{dc}{Whether to use degree correction.}
 
 \item{n.sweeps}{Number of sweeps to run.}
 
-\item{eps}{(optional) A number giving the ...}
+\item{eps}{(optional) A number controlling the randomness of moves.}
 
-\item{beta}{(optional) A number giving the greediness of the moves.}
+\item{beta}{(optional) A number controlling the greediness of moves.}
 }
 \value{
-A new partition given as a vector of integer values.
+A list object including the partition state after the last move, as well
+as the partition state with the lowest entropy.
 }
 \description{
 Runs a n.sweeps MCMC sweep across all nodes (for algorithm details see Piexoto,
-2018). Each node is given a chance to move blocks or stay in current block
+2014). Each node is given a chance to move blocks or stay in current block
 and all nodes are processed in random order for each sweep.
 }

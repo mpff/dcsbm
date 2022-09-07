@@ -1,19 +1,19 @@
 #' Run multiple MCMC sweep overs nodes
 #'
 #' Runs a n.sweeps MCMC sweep across all nodes (for algorithm details see Piexoto,
-#' 2018). Each node is given a chance to move blocks or stay in current block
+#' 2014). Each node is given a chance to move blocks or stay in current block
 #' and all nodes are processed in random order for each sweep.
 #'
 #' @param G An igraph graph.
 #' @param p Vector of integer values giving the initial block membership
 #' of each vertex
 #' @param B Number of blocks.
-#' @param dc Wether to use degree correction.
+#' @param dc Whether to use degree correction.
 #' @param n.sweeps Number of sweeps to run.
-#' @param eps (optional) A number giving the ...
-#' @param beta (optional) A number giving the greediness of the moves.
-#' @return A new partition given as a vector of integer values.
-#' @export
+#' @param eps (optional) A number controlling the randomness of moves.
+#' @param beta (optional) A number controlling the greediness of moves.
+#' @return A list object including the partition state after the last move, as well
+#' as the partition state with the lowest entropy.
 #' @import igraph
 
 mcmc_sweep <- function(G, p, B, dc = FALSE, n.sweeps = 1, eps = 0.1, beta = 1)
@@ -63,11 +63,11 @@ mcmc_sweep <- function(G, p, B, dc = FALSE, n.sweeps = 1, eps = 0.1, beta = 1)
 #' @param p Vector of integer values giving the block membership of each
 #' vertex
 #' @param B Number of blocks.
-#' @param dc Wether to use degree correction.
-#' @param eps (optional) A number giving the ...
-#' @param beta (optional) A number giving the greediness of the moves.
-#' @return A new partition given as a vector of integer values.
-#' @export
+#' @param dc Use the degree correcting version?
+#' @param eps (optional) A number controlling the randomness of moves.
+#' @param beta (optional) A number controlling the greediness of moves.
+#' @return A list object including the partition state after the last move, as well
+#' as the partition state with the lowest entropy.
 #' @import igraph
 
 mcmc_single_sweep <- function(G, p, B, dc = FALSE, eps = 0.1, beta = 1)
@@ -137,7 +137,7 @@ mcmc_single_sweep <- function(G, p, B, dc = FALSE, eps = 0.1, beta = 1)
 #' @param p Vector of integer values giving the block membership of each
 #' vertex
 #' @param block.edges a list of all incident edge ids per block
-#' @param eps (optional) A number giving the ...
+#' @param eps (optional) A number controlling the randomness of moves.
 #' @return A new group membership for vertex.
 #' @import igraph
 
@@ -179,9 +179,9 @@ propose_move <- function(curr_v, G, p, block.edges, eps = 1) {
 #' @param old_partition Vector of integer values giving the block membership of each
 #' vertex pre move.
 #' @param block.edges a list of all incident edge ids per block
-#' @param eps (optional) A number giving the ...
-#' @param beta (optional) A number giving the greediness of the moves.
-#' @param dc Wether to use degree correction.
+#' @param eps (optional) A number controlling the randomness of moves.
+#' @param beta (optional) A number controlling the greediness of moves.
+#' @param dc Whether to use degree correction.
 #' @return A new group membership for vertex.
 #' @import igraph
 
@@ -303,7 +303,7 @@ update_block_edge_list <- function(block.edges, v, G, new.b, old.b)
 }
 
 
-#' Create list of edges per block
+#' Swap the block membership of a vertex
 #'
 #' @param p Vector of integer values giving the block membership of each
 #' vertex

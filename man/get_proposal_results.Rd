@@ -32,11 +32,11 @@ vertex pre move.}
 
 \item{block.edges}{a list of all incident edge ids per block}
 
-\item{eps}{(optional) A number giving the ...}
+\item{eps}{(optional) A number controlling the randomness of moves.}
 
-\item{beta}{(optional) A number giving the greediness of the moves.}
+\item{beta}{(optional) A number controlling the greediness of moves.}
 
-\item{dc}{Wether to use degree correction.}
+\item{dc}{Whether to use degree correction.}
 }
 \value{
 A new group membership for vertex.

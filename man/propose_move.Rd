@@ -16,7 +16,7 @@ vertex}
 
 \item{block.edges}{a list of all incident edge ids per block}
 
-\item{eps}{(optional) A number giving the ...}
+\item{eps}{(optional) A number controlling the randomness of moves.}
 }
 \value{
 A new group membership for vertex.

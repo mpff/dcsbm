@@ -2,7 +2,7 @@
 % Please edit documentation in R/mcmc_sweep.R
 \name{swap_blocks}
 \alias{swap_blocks}
-\title{Create list of edges per block}
+\title{Swap the block membership of a vertex}
 \usage{
 swap_blocks(p, curr_v, proposed_new_block)
 }
@@ -15,5 +15,5 @@ vertex}
 \item{proposed_new_block}{block id}
 }
 \description{
-Create list of edges per block
+Swap the block membership of a vertex
 }

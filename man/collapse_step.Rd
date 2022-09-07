@@ -29,16 +29,16 @@ collapse_step(
 
 \item{n.sweeps}{Number of sweeps after block merge.}
 
-\item{eps}{A parameter controlling ...}
+\item{eps}{(optional) A number controlling the randomness of moves.}
 
-\item{beta}{A parameter controlling ....}
+\item{beta}{(optional) A number controlling the greediness of moves.}
 
-\item{verbose}{Wether to print verbose output to console.}
+\item{verbose}{Whether to print verbose output to console.}
 }
 \description{
 Collapse \code{n.merges} blocks together via agglomerative merging. For each
 block, \code{n.moves} merges are proposed using the same move proposal algorithm
 used for the MCMC sweeps. The move proposals are ranked and \code{n.merges}
 moves are performed after accounting for duplicates. After the merge, \code{n.sweeps}
-MCMC sweeps are performed to equilibrate the resulting partition.
+MCMC sweeps are performed to stabilize the resulting partition.
 }

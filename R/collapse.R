@@ -4,7 +4,7 @@
 #' block, \code{n.moves} merges are proposed using the same move proposal algorithm
 #' used for the MCMC sweeps. The move proposals are ranked and \code{n.merges}
 #' moves are performed after accounting for duplicates. After the merge, \code{n.sweeps}
-#' MCMC sweeps are performed to equilibrate the resulting partition.
+#' MCMC sweeps are performed to stabilize the resulting partition.
 #'
 #' @param graph An igraph graph.
 #' @param partition An vector of integers giving the block partition of nodes.
@@ -12,9 +12,9 @@
 #' @param n.merges Number of block merges in collapse step.
 #' @param n.moves Number of merge trials per block.
 #' @param n.sweeps Number of sweeps after block merge.
-#' @param eps A parameter controlling ...
-#' @param beta A parameter controlling ....
-#' @param verbose Wether to print verbose output to console.
+#' @param eps (optional) A number controlling the randomness of moves.
+#' @param beta (optional) A number controlling the greediness of moves.
+#' @param verbose Whether to print verbose output to console.
 #' @import igraph
 #' @importFrom utils setTxtProgressBar txtProgressBar
 

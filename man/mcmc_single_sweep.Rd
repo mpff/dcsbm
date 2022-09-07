@@ -14,14 +14,15 @@ vertex}
 
 \item{B}{Number of blocks.}
 
-\item{dc}{Wether to use degree correction.}
+\item{dc}{Use the degree correcting version?}
 
-\item{eps}{(optional) A number giving the ...}
+\item{eps}{(optional) A number controlling the randomness of moves.}
 
-\item{beta}{(optional) A number giving the greediness of the moves.}
+\item{beta}{(optional) A number controlling the greediness of moves.}
 }
 \value{
-A new partition given as a vector of integer values.
+A list object including the partition state after the last move, as well
+as the partition state with the lowest entropy.
 }
 \description{
 Runs a single MCMC sweep across all nodes (for algorithm details see Piexoto,
