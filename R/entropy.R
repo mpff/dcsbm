@@ -1,17 +1,22 @@
 #' Entropy of a block partition
 #'
 #' Calculate the entropy associated with the current block partition and type
-#' of degree correction. Can be used with directed and undirected graphs.
+#' of degree correction.
 #'
 #' @param graph An igraph graph.
 #' @param partition Vector of integer values giving the block membership of each
 #' vertex
-#' @param degree_correction Type of degree correction to use. "oneway" for one
-#' parameter per vertex, "twoway" for two parameters per vertex (input/output),
-#' "none" for no degree correction.
+#' @param degree_correction Whether to account for degree variability.
 #' @return Entropy value (numeric) for the given graph and partition.
 #' @keywords graphs, inference, stochastic block model, degree correction
-#' @export
+#' @examples
+#' g <- sample_ppm(30, 0.9, 10, 3)
+#' # Entropy of a random partition
+#' p_random <- sample(1:3, size = 30, replace = TRUE)
+#' get_entropy(g, p_random)
+#' # Entropy of the true partition
+#' p_true <- c(rep(1,30), rep(2,30), rep(3,30))
+#' get_entropy(g, p_true)
 #' @import igraph
 
 get_entropy <- function (graph, partition, degree_correction = FALSE)
@@ -49,9 +54,10 @@ get_entropy <- function (graph, partition, degree_correction = FALSE)
 }
 
 
-#' Entropy (no degree correction)
+#' Traditional Entropy (no degree correction)
 #'
-#' Calculate the entropy associated with the current block partition.
+#' Calculate the traditional entropy associated with the current graph and
+#' block partition.
 #'
 #' \deqn{S_t = \frac{1}{2} \sum_{rs} n_r n_s H_b\left(\frac{e_{rs}}{n_r n_s}\right)}{St = 0.5 * sum_(n[r] * n[s] * H_b(E[r,s] / (n[r]*n[s]))}
 #'
@@ -84,7 +90,8 @@ entropy_trad <- function (E, n, directed = FALSE, simple = TRUE)
 
 #' Entropy (degree corrected)
 #'
-#' Calculate the entropy associated with the current block partition.
+#' Calculate the degree corrected entropy associated with the current graph and
+#' block partition.
 #'
 #' Undirected case:
 #'
@@ -95,8 +102,8 @@ entropy_trad <- function (E, n, directed = FALSE, simple = TRUE)
 #' }
 #'
 #' @param E Integer matrix of edge counts associated with current partition.
-#' @param d Integer vector of node degrees.
-#' @param directed Wether to calcualted directed entropy.
+#' @param d List with one or two integers vector of node degrees.
+#' @param directed Whether graph is directed
 #' @import igraph
 
 entropy_corrected <- function (E, d, directed = FALSE)

@@ -12,16 +12,23 @@ get_entropy(graph, partition, degree_correction = FALSE)
 \item{partition}{Vector of integer values giving the block membership of each
 vertex}
 
-\item{degree_correction}{Type of degree correction to use. "oneway" for one
-parameter per vertex, "twoway" for two parameters per vertex (input/output),
-"none" for no degree correction.}
+\item{degree_correction}{Whether to account for degree variability.}
 }
 \value{
 Entropy value (numeric) for the given graph and partition.
 }
 \description{
 Calculate the entropy associated with the current block partition and type
-of degree correction. Can be used with directed and undirected graphs.
+of degree correction.
+}
+\examples{
+g <- sample_ppm(30, 0.9, 10, 3)
+# Entropy of a random partition
+p_random <- sample(1:3, size = 30, replace = TRUE)
+get_entropy(g, p_random)
+# Entropy of the true partition
+p_true <- c(rep(1,30), rep(2,30), rep(3,30))
+get_entropy(g, p_true)
 }
 \keyword{block}
 \keyword{correction}

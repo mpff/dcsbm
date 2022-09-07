@@ -9,12 +9,13 @@ entropy_corrected(E, d, directed = FALSE)
 \arguments{
 \item{E}{Integer matrix of edge counts associated with current partition.}
 
-\item{d}{Integer vector of node degrees.}
+\item{d}{List with one or two integers vector of node degrees.}
 
-\item{directed}{Wether to calcualted directed entropy.}
+\item{directed}{Whether graph is directed}
 }
 \description{
-Calculate the entropy associated with the current block partition.
+Calculate the degree corrected entropy associated with the current graph and
+block partition.
 }
 \details{
 Undirected case:

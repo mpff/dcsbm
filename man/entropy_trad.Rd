@@ -2,7 +2,7 @@
 % Please edit documentation in R/entropy.R
 \name{entropy_trad}
 \alias{entropy_trad}
-\title{Entropy (no degree correction)}
+\title{Traditional Entropy (no degree correction)}
 \usage{
 entropy_trad(E, n, directed = FALSE, simple = TRUE)
 }
@@ -16,7 +16,8 @@ entropy_trad(E, n, directed = FALSE, simple = TRUE)
 \item{simple}{Whether graph is simple.}
 }
 \description{
-Calculate the entropy associated with the current block partition.
+Calculate the traditional entropy associated with the current graph and
+block partition.
 }
 \details{
 \deqn{S_t = \frac{1}{2} \sum_{rs} n_r n_s H_b\left(\frac{e_{rs}}{n_r n_s}\right)}{St = 0.5 * sum_(n[r] * n[s] * H_b(E[r,s] / (n[r]*n[s]))}
