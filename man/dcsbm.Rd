@@ -49,9 +49,8 @@ Sample a (weighted) graph from the planted partition model: \code{\link{sample_p
 Sample a (weighted) graph from a degree variable planted partition model: \code{\link{sample_dcppm}}
 }
 \examples{
-## Three groups with weighted connections.
-g1 <- sample_ppm(60, 0.9, 10, 3)
-model <- dcsbm(g1)
+g <- sample_ppm(60, 0.9, 10, 3)
+model <- dcsbm(g)
 }
 \keyword{block}
 \keyword{correction}

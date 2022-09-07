@@ -13,9 +13,8 @@
 #' @return Todo
 #' @keywords graphs, inference, stochastic block model, degree correction
 #' @examples
-#' ## Three groups with weighted connections.
-#' g1 <- sample_ppm(60, 0.9, 10, 3)
-#' model <- dcsbm(g1)
+#' g <- sample_ppm(60, 0.9, 10, 3)
+#' model <- dcsbm(g)
 #' @export
 #' @import igraph
 
