@@ -2,7 +2,7 @@
 % Please edit documentation in R/criterion.R
 \name{h_func}
 \alias{h_func}
-\title{Mathematicl function used description length calculation}
+\title{Mathematical function used description length calculation}
 \usage{
 h_func(x)
 }
@@ -13,8 +13,5 @@ h_func(x)
 The value of \code{h(x)}
 }
 \description{
-Mathematicl function used description length calculation
-}
-\examples{
-h_func(1)
+Mathematical function used description length calculation
 }

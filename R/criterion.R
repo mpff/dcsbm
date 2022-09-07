@@ -57,12 +57,10 @@ calculate_dl <- function(graph, partition, degree_correction = FALSE) {
 }
 
 
-#' Mathematicl function used description length calculation
+#' Mathematical function used description length calculation
 #'
 #' @param x A number.
 #' @return The value of \code{h(x)}
-#' @examples
-#' h_func(1)
 
 h_func <- function(x) {
   (1 + x) * log(1 + x) - x * log(x)

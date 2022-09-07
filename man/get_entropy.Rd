@@ -21,15 +21,6 @@ Entropy value (numeric) for the given graph and partition.
 Calculate the entropy associated with the current block partition and type
 of degree correction.
 }
-\examples{
-g <- sample_ppm(30, 0.9, 10, 3)
-# Entropy of a random partition
-p_random <- sample(1:3, size = 30, replace = TRUE)
-get_entropy(g, p_random)
-# Entropy of the true partition
-p_true <- c(rep(1,30), rep(2,30), rep(3,30))
-get_entropy(g, p_true)
-}
 \keyword{block}
 \keyword{correction}
 \keyword{degree}

@@ -20,18 +20,20 @@ dcsbm(
 
 \item{degree_correction}{Whether to use degree correction.}
 
-\item{n.blocks}{Number of blocks.}
+\item{n.blocks}{The maximum and minimum number of blocks to consider in the estimation.}
 
-\item{n.moves}{Number of merge trials per block.}
+\item{n.moves}{Number of merge trials per block (see \code{collapse_step}).}
 
-\item{n.sweeps}{Number of sweeps after block merge.}
+\item{n.sweeps}{Number of sweeps after block merge (see \code{collapse_step}).}
 
 \item{verbose}{Wether to print verbose output during estimation.}
 
 \item{control}{List of parameters for the inference algorithm.}
 }
 \value{
-Todo
+A list object including the estimated SBM parameters such as block
+transmission probabilities and degree correction parameters, as well as
+information about each iteration of the estimation algorithm.
 }
 \description{
 The 'dcsbm' packages provides methods for estimating a two-way degree

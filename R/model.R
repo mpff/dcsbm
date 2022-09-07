@@ -5,12 +5,14 @@
 #'
 #' @param graph An igraph graph.
 #' @param degree_correction Whether to use degree correction.
-#' @param n.blocks Number of blocks.
-#' @param n.moves Number of merge trials per block.
-#' @param n.sweeps Number of sweeps after block merge.
+#' @param n.blocks The maximum and minimum number of blocks to consider in the estimation.
+#' @param n.moves Number of merge trials per block (see \code{collapse_step}).
+#' @param n.sweeps Number of sweeps after block merge (see \code{collapse_step}).
 #' @param verbose Wether to print verbose output during estimation.
 #' @param control List of parameters for the inference algorithm.
-#' @return Todo
+#' @return A list object including the estimated SBM parameters such as block
+#' transmission probabilities and degree correction parameters, as well as
+#' information about each iteration of the estimation algorithm.
 #' @keywords graphs, inference, stochastic block model, degree correction
 #' @examples
 #' g <- sample_ppm(60, 0.9, 10, 3)
@@ -164,6 +166,8 @@ dcsbm <- function (graph, degree_correction = FALSE, n.blocks = c(1, Inf),
 
   degree_parameters <- block_degree_sequence(graph, best_partition)
 
+  transmission_probs <- get_transmission_probs(graph, best_partition, degree_correction)
+
   list("block_transmission_probs" = NULL, "B_opt" = best_number_of_blocks,
        "minimum_description_length" = minimum_dl, "best_partition" = best_partition,
        "degree_parameters" = degree_parameters,
@@ -171,6 +175,15 @@ dcsbm <- function (graph, degree_correction = FALSE, n.blocks = c(1, Inf),
 }
 
 
+
+#' Build a sequence of block numbers
+#'
+#' So that B_{i+1} = B_i/sigma.
+#'
+#' @param Bmax Start value
+#' @param Bmin End value
+#' @param sigma Division factor.
+#' @return A vector of block numbers in decreasing order.
 
 block_sequence <- function(Bmax, Bmin = 1, sigma = 1.5) {
 
@@ -189,4 +202,18 @@ block_sequence <- function(Bmax, Bmin = 1, sigma = 1.5) {
     effBnext <- floor(effBnext/sigma)
   }
   return(append(effBseq + Bmin, Bmin))
+}
+
+
+
+#' Build a matrix of transmission probabilities for given graph and partition
+#'
+#' @param graph An igraph graph.
+#' @param partition Vector of integer values giving the block membership of each
+#' vertex
+#' @param degree_correction Whether to use degree correction in the calculation.
+#' @return A B x B matrix giving the transmission probabilities between each block.
+
+get_transmission_probs <- function(graph, best_partition, degree_correction){
+  NULL
 }
