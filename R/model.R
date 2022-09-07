@@ -214,6 +214,6 @@ block_sequence <- function(Bmax, Bmin = 1, sigma = 1.5) {
 #' @param degree_correction Whether to use degree correction in the calculation.
 #' @return A B x B matrix giving the transmission probabilities between each block.
 
-get_transmission_probs <- function(graph, best_partition, degree_correction){
+get_transmission_probs <- function(graph, partition, degree_correction){
   NULL
 }

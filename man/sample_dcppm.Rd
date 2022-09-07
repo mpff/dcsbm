@@ -26,11 +26,9 @@ A value of 0 means that all vertices have the same expected degree.#'}
 An igraph graph.
 }
 \description{
-Sampling from the planted partition model as described in Piexoto 2020.
-}
-\details{
 This function samples graphs from a stochastic block model by building a
-block adjacency matrix from the Parameters N, k, B and c.
+block adjacency matrix from the Parameters N, k, B and c and accounting
+for a exponential degree sequence inside each block controlled by \code{k_coef}.
 }
 \examples{
 ## Three groups with only a few connection between groups

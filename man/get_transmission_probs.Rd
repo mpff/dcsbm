@@ -4,15 +4,15 @@
 \alias{get_transmission_probs}
 \title{Build a matrix of transmission probabilities for given graph and partition}
 \usage{
-get_transmission_probs(graph, best_partition, degree_correction)
+get_transmission_probs(graph, partition, degree_correction)
 }
 \arguments{
 \item{graph}{An igraph graph.}
 
-\item{degree_correction}{Whether to use degree correction in the calculation.}
-
 \item{partition}{Vector of integer values giving the block membership of each
 vertex}
+
+\item{degree_correction}{Whether to use degree correction in the calculation.}
 }
 \value{
 A B x B matrix giving the transmission probabilities between each block.

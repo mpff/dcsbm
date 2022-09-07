@@ -88,10 +88,9 @@ sample_ppm <- function (N, c, k, B, directed = FALSE, loops = FALSE)
 
 #' Sample planted partition model with degree variability (Piexoto 2020)
 #'
-#' Sampling from the planted partition model as described in Piexoto 2020.
-#'
 #' This function samples graphs from a stochastic block model by building a
-#' block adjacency matrix from the Parameters N, k, B and c.
+#' block adjacency matrix from the Parameters N, k, B and c and accounting
+#' for a exponential degree sequence inside each block controlled by \code{k_coef}.
 #'
 #' @param N Number of vertices in the graph.
 #' @param c A number between 0 and 1 controlling the
