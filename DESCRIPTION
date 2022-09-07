@@ -11,7 +11,7 @@ Description: Provides methods for estimating a two-way degree corrected
     stochastic block model for directed multi graphs. Depends on the 
     'igraph' library <https://igraph.org> for graph handling. See Peixoto (2014) 
     <10.1103/PhysRevE.89.012804> for details on the inference algorithm.
-License: MIT + file LICENSE
+License: MIT
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
