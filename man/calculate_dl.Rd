@@ -12,16 +12,18 @@ calculate_dl(graph, partition, degree_correction = FALSE)
 \item{partition}{Vector of integer values giving the block membership of each
 vertex}
 
-\item{degree_correction}{Type of degree correction to use. "oneway" for one
-parameter per vertex, "twoway" for two parameters per vertex (input/output),
-"none" for no degree correction.}
+\item{degree_correction}{Whether to use degree correction in the calculation.}
 }
 \value{
 Description length value (numeric) for the given graph and partition.
 }
 \description{
 Calculate the description length associated with the current block partition
-and type of degree correction. Can be used with directed and undirected graphs.
+and type of degree correction.
+}
+\examples{
+g <- sample_ppm(10, 0.9, 10, 3)
+calculate_dl(g)
 }
 \keyword{block}
 \keyword{correction}
