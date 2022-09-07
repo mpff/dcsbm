@@ -3,14 +3,15 @@ Version: 0.0.0.9000
 Title: Degree Corrected Stochastic Block Models
 Authors@R: c(
     person("Manuel", "Pfeuffer", role = c("aut", "cre"),
-           email = "manuel.pfeuffer@esmt.org"),
+           email = "manuel.pfeuffer@esmt.org",
+           comment = c(ORCID = "0000-0002-9308-0470")),
     person("Jan", "Nimczik", role = c("aut"),
            email = "jan.nimczik@esmt.org"))
 Description: Provides methods for estimating a two-way degree corrected 
-    stochastic block model for directed, weighted graphs. Depends on the 
+    stochastic block model for directed multi graphs. Depends on the 
     'igraph' library <https://igraph.org> for graph handling. See Peixoto (2014) 
     <10.1103/PhysRevE.89.012804> for details on the inference algorithm.
-License: GPL (>= 3)
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
