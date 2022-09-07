@@ -11,8 +11,15 @@
 #' @param verbose Wether to print verbose output during estimation.
 #' @param control List of parameters for the inference algorithm.
 #' @return A list object including the estimated SBM parameters such as block
-#' transmission probabilities and degree correction parameters, as well as
-#' information about each iteration of the estimation algorithm.
+#' transmission probabilities and degree correction parameters
+#' Entries:
+#'   \item{B_opt}{Optimal number of blocks}
+#'   \item{minimum_description_length}{Description length of the best partition}
+#'   \item{block_transmission_probs}{ A B x B matrix of block transmission probabilities}
+#'   \item{degree_parameters}{A list with one or two degree parameters per node
+#'   depending on whether the graph is undirected or directed}
+#'   \item{best_partition}{The optimal estimated partition}
+#'   \item{iterations}{information about each collapse iteration}
 #' @keywords graphs, inference, stochastic block model, degree correction
 #' @examples
 #' g <- sample_ppm(60, 0.9, 10, 3)
@@ -166,7 +173,7 @@ dcsbm <- function (graph, degree_correction = FALSE, n.blocks = c(1, Inf),
 
   degree_parameters <- block_degree_sequence(graph, best_partition)
 
-  transmission_probs <- get_transmission_probs(graph, best_partition, degree_correction)
+  transmission_probs <- get_transmission_probs(graph, best_partition)
 
   list("block_transmission_probs" = NULL, "B_opt" = best_number_of_blocks,
        "minimum_description_length" = minimum_dl, "best_partition" = best_partition,
@@ -211,9 +218,11 @@ block_sequence <- function(Bmax, Bmin = 1, sigma = 1.5) {
 #' @param graph An igraph graph.
 #' @param partition Vector of integer values giving the block membership of each
 #' vertex
-#' @param degree_correction Whether to use degree correction in the calculation.
-#' @return A B x B matrix giving the transmission probabilities between each block.
+#' @return A B x B matrix giving the transmission probabilities between each block,
+#' where an entry \code{[i,j]} indiciates the transmission probability of going from block
+#' i to block j.
 
-get_transmission_probs <- function(graph, partition, degree_correction){
-  NULL
+get_transmission_probs <- function(graph, partition){
+  E <- block_edge_counts(graph, partition)
+  E/rowSums(E)
 }

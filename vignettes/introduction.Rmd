@@ -18,14 +18,18 @@ set.seed(2022)
 ```
 
 
+You can install the development version from [GitHub](https://github.com/) with:
+
 ```{r, eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("mpff/dcsbm")
 library(dcsbm)
 ```
 
 
-### A. Agglomerative Merge
-
 #### 1. No degree correction
+
+We can simulate a network with a clear block structure using the planted partition model via `sample_ppm`. And then estimate a SBM using the `dcsbm` function.
 
 ```{r}
 G <- sample_ppm(100, 0.9, 10, 3, directed = TRUE, loops = TRUE)
@@ -37,6 +41,8 @@ plot(G, vertex.color = model$best_partition, vertex.label = NA)
 
 
 #### 2. With degree correction
+
+We can simulate a planted partition network with additional degree variability inside each block via `sample_dcppm`. And then estimate a degree corrected SBM by using `dcsbm` and setting `degree_correction = TRUE`.
 
 ```{r}
 G <- sample_dcppm(100, 0.9, 10, 3, k_coef = 2, directed = TRUE, loops = TRUE)

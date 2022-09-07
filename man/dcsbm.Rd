@@ -32,8 +32,15 @@ dcsbm(
 }
 \value{
 A list object including the estimated SBM parameters such as block
-transmission probabilities and degree correction parameters, as well as
-information about each iteration of the estimation algorithm.
+transmission probabilities and degree correction parameters
+Entries:
+\item{B_opt}{Optimal number of blocks}
+\item{minimum_description_length}{Description length of the best partition}
+\item{block_transmission_probs}{ A B x B matrix of block transmission probabilities}
+\item{degree_parameters}{A list with one or two degree parameters per node
+depending on whether the graph is undirected or directed}
+\item{best_partition}{The optimal estimated partition}
+\item{iterations}{information about each collapse iteration}
 }
 \description{
 The 'dcsbm' packages provides methods for estimating a two-way degree
