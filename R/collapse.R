@@ -1,6 +1,10 @@
-#' Stochastic block model
+#' Perform an agglomerative merge step
 #'
-#' Estimate a ...
+#' Collapse \code{n.merges} blocks together via agglomerative merging. For each
+#' block, \code{n.moves} merges are proposed using the same move proposal algorithm
+#' used for the MCMC sweeps. The move proposals are ranked and \code{n.merges}
+#' moves are performed after accounting for duplicates. After the merge, \code{n.sweeps}
+#' MCMC sweeps are performed to equilibrate the resulting partition.
 #'
 #' @param graph An igraph graph.
 #' @param partition An vector of integers giving the block partition of nodes.
@@ -121,8 +125,6 @@ collapse_step <- function(graph, partition, degree_correction = FALSE,
 
     # Update new partition
     new_partition <- replace(new_partition, new_partition == best_merge_pair$g1, best_merge_pair$g2)
-
-    #message(best_merge_pair$g1, " -> ", best_merge_pair$g2, " (", length(unique(new_partition)), ")")
 
     # Update merge results
     merge_results_ordered$g1 <- replace(merge_results_ordered$g1, which(merge_results_ordered$g1 == best_merge_pair$g1), best_merge_pair$g2)

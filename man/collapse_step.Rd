@@ -2,7 +2,7 @@
 % Please edit documentation in R/collapse.R
 \name{collapse_step}
 \alias{collapse_step}
-\title{Stochastic block model}
+\title{Perform an agglomerative merge step}
 \usage{
 collapse_step(
   graph,
@@ -36,5 +36,9 @@ collapse_step(
 \item{verbose}{Wether to print verbose output to console.}
 }
 \description{
-Estimate a ...
+Collapse \code{n.merges} blocks together via agglomerative merging. For each
+block, \code{n.moves} merges are proposed using the same move proposal algorithm
+used for the MCMC sweeps. The move proposals are ranked and \code{n.merges}
+moves are performed after accounting for duplicates. After the merge, \code{n.sweeps}
+MCMC sweeps are performed to equilibrate the resulting partition.
 }
