@@ -14,7 +14,7 @@ test_that("Agglomerative merging works", {
 
   # Real example.
   g3 <- sample_ppm(60,0.9, 10, 3, directed = TRUE, loops = TRUE)
-  expect_error(dcsbm(g3, n.moves = 1, n.sweeps = 1, verbose = FALSE), NA)
+  expect_error(m <- dcsbm(g3, n.moves = 1, n.sweeps = 1, verbose = FALSE), NA)
 })
 
 

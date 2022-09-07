@@ -48,7 +48,7 @@ library(dcsbm)
 g <- sample_dcppm(60, c=0.9, k=20, B=3, k_coef=1.5, directed=TRUE, loops=TRUE)
 m <- dcsbm(g, degree_correction=TRUE, n.sweeps=5, verbose=FALSE)
 
-# Plot result for 3 blocks.
+# Plot result.
 plot(g, vertex.color = m$best_partition, vertex.label = NA, sub = "Estimated partition")
 ```
 

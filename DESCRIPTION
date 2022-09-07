@@ -27,3 +27,4 @@ Suggests:
     bench
 Config/testthat/edition: 3
 VignetteBuilder: knitr
+URL: https://mpff.github.io/dcsbm/
