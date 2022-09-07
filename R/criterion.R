@@ -10,9 +10,6 @@
 #' @return Description length value (numeric) for the given graph and partition.
 #' @keywords graphs, inference, stochastic block model, degree correction
 #' @import igraph
-#' @examples
-#' g <- sample_ppm(10, 0.9, 10, 3)
-#' calculate_dl(g)
 
 calculate_dl <- function(graph, partition, degree_correction = FALSE) {
 

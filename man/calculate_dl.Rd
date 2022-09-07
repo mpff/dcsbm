@@ -21,10 +21,6 @@ Description length value (numeric) for the given graph and partition.
 Calculate the description length associated with the current block partition
 and type of degree correction.
 }
-\examples{
-g <- sample_ppm(10, 0.9, 10, 3)
-calculate_dl(g)
-}
 \keyword{block}
 \keyword{correction}
 \keyword{degree}
