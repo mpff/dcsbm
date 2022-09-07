@@ -111,9 +111,28 @@ for directed multigraphs with self-loops.</p>
     
 
 <p>A list object including the estimated SBM parameters such as block
-transmission probabilities and degree correction parameters, as well as
-information about each iteration of the estimation algorithm.</p>
-    </div>
+transmission probabilities and degree correction parameters
+Entries:</p>
+<dl><dt>B_opt</dt>
+<dd><p>Optimal number of blocks</p></dd>
+
+<dt>minimum_description_length</dt>
+<dd><p>Description length of the best partition</p></dd>
+
+<dt>block_transmission_probs</dt>
+<dd><p>A B x B matrix of block transmission probabilities</p></dd>
+
+<dt>degree_parameters</dt>
+<dd><p>A list with one or two degree parameters per node
+depending on whether the graph is undirected or directed</p></dd>
+
+<dt>best_partition</dt>
+<dd><p>The optimal estimated partition</p></dd>
+
+<dt>iterations</dt>
+<dd><p>information about each collapse iteration</p></dd>
+
+</dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Estimate a degree corrected stochastic block model: <code>dcsbm</code></p>

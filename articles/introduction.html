@@ -72,14 +72,15 @@
 
     
     
+<p>You can install the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mpff.github.io/dcsbm/">dcsbm</a></span><span class="op">)</span></span></code></pre></div>
-<div class="section level3">
-<h3 id="a--agglomerative-merge">A. Agglomerative Merge<a class="anchor" aria-label="anchor" href="#a--agglomerative-merge"></a>
-</h3>
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"mpff/dcsbm"</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mpff.github.io/dcsbm/">dcsbm</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="no-degree-correction">1. No degree correction<a class="anchor" aria-label="anchor" href="#no-degree-correction"></a>
 </h4>
+<p>We can simulate a network with a clear block structure using the planted partition model via <code>sample_ppm</code>. And then estimate a SBM using the <code>dcsbm</code> function.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">G</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sample_ppm.html">sample_ppm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">0.9</span>, <span class="fl">10</span>, <span class="fl">3</span>, directed <span class="op">=</span> <span class="cn">TRUE</span>, loops <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -91,6 +92,7 @@
 <div class="section level4">
 <h4 id="with-degree-correction">2. With degree correction<a class="anchor" aria-label="anchor" href="#with-degree-correction"></a>
 </h4>
+<p>We can simulate a planted partition network with additional degree variability inside each block via <code>sample_dcppm</code>. And then estimate a degree corrected SBM by using <code>dcsbm</code> and setting <code>degree_correction = TRUE</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">G</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/sample_dcppm.html">sample_dcppm</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">0.9</span>, <span class="fl">10</span>, <span class="fl">3</span>, k_coef <span class="op">=</span> <span class="fl">2</span>, directed <span class="op">=</span> <span class="cn">TRUE</span>, loops <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
@@ -101,7 +103,6 @@
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">G</span>, vertex.color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">34</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">33</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">3</span>,<span class="fl">33</span><span class="op">)</span><span class="op">)</span>, vertex.label <span class="op">=</span> <span class="cn">NA</span>, sub <span class="op">=</span> <span class="st">"True partition"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-3-2.png" width="700"></p>
-</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
