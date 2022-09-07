@@ -8,6 +8,7 @@
 #' Estimate a degree corrected stochastic block model: \code{\link{dcsbm}}
 #'
 #' Sample a (weighted) graph from the planted partition model: \code{\link{sample_ppm}}
+#' Sample a (weighted) graph from a degree variable planted partition model: \code{\link{sample_dcppm}}
 #'
 #' @docType package
 #' @name dcsbm
