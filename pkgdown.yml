@@ -1,0 +1,12 @@
+pandoc: 2.14.2
+pkgdown: 2.0.6
+pkgdown_sha: ~
+articles:
+  benchmarks: benchmarks.html
+  example: example.html
+  introduction: introduction.html
+last_built: 2022-09-07T14:00Z
+urls:
+  reference: https://mpff.github.io/dcsbm/reference
+  article: https://mpff.github.io/dcsbm/articles
+
