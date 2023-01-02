@@ -32,7 +32,7 @@
     
     <a class="navbar-brand me-2" href="index.html">dcsbm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9002</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -84,21 +84,37 @@
 <p>This is a basic example which shows you how to solve a common problem:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mpff.github.io/dcsbm/">dcsbm</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loading required package: igraph</span></span>
+<span><span class="co">#&gt; Lade nötiges Paket: igraph</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'igraph'</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:stats':</span></span>
+<span><span class="co">#&gt; Attache Paket: 'igraph'</span></span>
+<span><span class="co">#&gt; Die folgenden Objekte sind maskiert von 'package:stats':</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     decompose, spectrum</span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:base':</span></span>
+<span><span class="co">#&gt; Das folgende Objekt ist maskiert 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;     union</span></span>
 <span></span>
-<span><span class="co"># Generate graph by a planted partition model and estimate an sbm.</span></span>
-<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sample_dcppm.html">sample_dcppm</a></span><span class="op">(</span><span class="fl">60</span>, c<span class="op">=</span><span class="fl">0.9</span>, k<span class="op">=</span><span class="fl">20</span>, B<span class="op">=</span><span class="fl">3</span>, k_coef<span class="op">=</span><span class="fl">1.5</span>, directed<span class="op">=</span><span class="cn">TRUE</span>, loops<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># Generate graph by a planted partition model and estimate a degree-corrected SBM.</span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sample_dcppm.html">sample_dcppm</a></span><span class="op">(</span><span class="fl">60</span>, c<span class="op">=</span><span class="fl">0.9</span>, k<span class="op">=</span><span class="fl">10</span>, B<span class="op">=</span><span class="fl">3</span>, k_coef<span class="op">=</span><span class="fl">1.5</span>, directed<span class="op">=</span><span class="cn">TRUE</span>, loops<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/dcsbm.html">dcsbm</a></span><span class="op">(</span><span class="va">g</span>, degree_correction<span class="op">=</span><span class="cn">TRUE</span>, n.sweeps<span class="op">=</span><span class="fl">5</span>, verbose<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Plot result.</span></span>
+<span><span class="co"># Show model summary.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span></span>
+<span><span class="co">#&gt; IGRAPH 3ec2aef D--- 60 1200 -- Planted partition model with degree variability</span></span>
+<span><span class="co">#&gt; + attr: name (g/c), loops (g/l)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Degree correction: two way</span></span>
+<span><span class="co">#&gt; Optimal number of blocks: 3 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Block transmission probabilities:</span></span>
+<span><span class="co">#&gt;        [,1]   [,2]   [,3]</span></span>
+<span><span class="co">#&gt; [1,] 0.9000 0.0350 0.0650</span></span>
+<span><span class="co">#&gt; [2,] 0.0475 0.9025 0.0500</span></span>
+<span><span class="co">#&gt; [3,] 0.0600 0.0425 0.8975</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Minimum Description Length (MDL) = 0.9688423</span></span>
+<span></span>
+<span><span class="co"># Plot the resulting partition.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">g</span>, vertex.color <span class="op">=</span> <span class="va">m</span><span class="op">$</span><span class="va">best_partition</span>, vertex.label <span class="op">=</span> <span class="cn">NA</span>, sub <span class="op">=</span> <span class="st">"Estimated partition"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-example-1.png" width="66%"></p>
 </div>
