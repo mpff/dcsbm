@@ -34,21 +34,37 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(dcsbm)
-#> Loading required package: igraph
+#> Lade nötiges Paket: igraph
 #> 
-#> Attaching package: 'igraph'
-#> The following objects are masked from 'package:stats':
+#> Attache Paket: 'igraph'
+#> Die folgenden Objekte sind maskiert von 'package:stats':
 #> 
 #>     decompose, spectrum
-#> The following object is masked from 'package:base':
+#> Das folgende Objekt ist maskiert 'package:base':
 #> 
 #>     union
 
-# Generate graph by a planted partition model and estimate an sbm.
-g <- sample_dcppm(60, c=0.9, k=20, B=3, k_coef=1.5, directed=TRUE, loops=TRUE)
+# Generate graph by a planted partition model and estimate a degree-corrected SBM.
+g <- sample_dcppm(60, c=0.9, k=10, B=3, k_coef=1.5, directed=TRUE, loops=TRUE)
 m <- dcsbm(g, degree_correction=TRUE, n.sweeps=5, verbose=FALSE)
 
-# Plot result.
+# Show model summary.
+summary(m)
+#> IGRAPH 3ec2aef D--- 60 1200 -- Planted partition model with degree variability
+#> + attr: name (g/c), loops (g/l)
+#> 
+#> Degree correction: two way
+#> Optimal number of blocks: 3 
+#> 
+#> Block transmission probabilities:
+#>        [,1]   [,2]   [,3]
+#> [1,] 0.9000 0.0350 0.0650
+#> [2,] 0.0475 0.9025 0.0500
+#> [3,] 0.0600 0.0425 0.8975
+#> 
+#> Minimum Description Length (MDL) = 0.9688423
+
+# Plot the resulting partition.
 plot(g, vertex.color = m$best_partition, vertex.label = NA, sub = "Estimated partition")
 ```
 

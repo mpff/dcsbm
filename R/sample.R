@@ -76,9 +76,6 @@ sample_ppm <- function (N, c, k, B, directed = FALSE, loops = FALSE)
   if (igraph_opt("add.params")) {
     res$name <- "Planted partition model"
     res$loops <- loops
-    res$c <- c
-    res$k <- k
-    res$B <- B
   }
 
   # Return
@@ -194,10 +191,6 @@ sample_dcppm <- function (N, c, k, B, k_coef = 0, directed = FALSE, loops = FALS
   if (igraph_opt("add.params")) {
     res$name <- "Planted partition model with degree variability"
     res$loops <- loops
-    res$c <- c
-    res$k <- k
-    res$B <- B
-    res$k_coef <- k_coef
   }
 
   # Return

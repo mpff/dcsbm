@@ -31,7 +31,7 @@ See Peixoto (2014) <10.1103/PhysRevE.89.012804> for details on the inference alg
 
 You can install the development version from [GitHub](https://github.com/) with:
 
-``` r
+```{r, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("mpff/dcsbm")
 ```
@@ -44,10 +44,13 @@ This is a basic example which shows you how to solve a common problem:
 ```{r example}
 library(dcsbm)
 
-# Generate graph by a planted partition model and estimate an sbm.
-g <- sample_dcppm(60, c=0.9, k=20, B=3, k_coef=1.5, directed=TRUE, loops=TRUE)
+# Generate graph by a planted partition model and estimate a degree-corrected SBM.
+g <- sample_dcppm(60, c=0.9, k=10, B=3, k_coef=1.5, directed=TRUE, loops=TRUE)
 m <- dcsbm(g, degree_correction=TRUE, n.sweeps=5, verbose=FALSE)
 
-# Plot result.
+# Show model summary.
+summary(m)
+
+# Plot the resulting partition.
 plot(g, vertex.color = m$best_partition, vertex.label = NA, sub = "Estimated partition")
 ```

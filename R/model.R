@@ -175,12 +175,41 @@ dcsbm <- function (graph, degree_correction = FALSE, n.blocks = c(1, Inf),
 
   transmission_probs <- get_transmission_probs(graph, best_partition)
 
-  list("block_transmission_probs" = transmission_probs, "B_opt" = best_number_of_blocks,
+  output <- list("block_transmission_probs" = transmission_probs, "B_opt" = best_number_of_blocks,
        "minimum_description_length" = minimum_dl, "best_partition" = best_partition,
        "degree_parameters" = degree_parameters,
-       "iterations" = collapse_iterations)
+       "iterations" = collapse_iterations, "graph" = graph)
+
+  structure(output, class = "dcsbm")
 }
 
+#' @export
+print.dcsbm <- function(x, ...) {
+  cat("Degree correction:")
+  if(length(x$degree_parameters) == 2) cat(" two way\n") else cat(" one way\n")
+  cat("Optimal number of blocks:", x$B_opt, "\n")
+  cat("\n")
+  cat("Minimum Description Length (MDL) =", x$minimum_description_length)
+  cat("\n")
+  invisible(x)
+}
+
+#' @export
+summary.dcsbm <- function(object, ...) {
+  x <- object
+  summary(x$graph)
+  cat("\n")
+  cat("Degree correction:")
+  if(length(x$degree_parameters) == 2) cat(" two way\n") else cat(" one way\n")
+  cat("Optimal number of blocks:", x$B_opt, "\n")
+  cat("\n")
+  cat("Block transmission probabilities:\n")
+  print(x$block_transmission_probs)
+  cat("\n")
+  cat("Minimum Description Length (MDL) =", x$minimum_description_length)
+  cat("\n")
+  invisible(x)
+}
 
 
 #' Build a sequence of block numbers

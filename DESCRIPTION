@@ -1,5 +1,5 @@
 Package: dcsbm
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Title: Degree Corrected Stochastic Block Models
 Authors@R: c(
     person("Manuel", "Pfeuffer", role = c("aut", "cre"),
