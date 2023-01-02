@@ -21,7 +21,7 @@ set.seed(2022)
 
 ### A. Scaling with network size
 
-```{r, eval = FALSE, echo = FALSE}
+```{r, eval=FALSE}
 results <- bench::press(
   Nsize = c(10, 25, 50, 75, 100),
   {
@@ -47,7 +47,7 @@ results
 
 #### 1. MCMC sweeps
 
-```{r, eval = FALSE, echo = FALSE}
+```{r, eval=FALSE}
 # Initialize graph and a random starting partition
 G <- sample_ppm(100, c = 0.9, k = 10, B = 3, directed = TRUE, loops = TRUE)
 
@@ -66,10 +66,10 @@ plot(G, vertex.color = result$best_partition, vertex.label = NA)
 
 #### 2. Agglomerative Merge
 
-```{r, eval = FALSE, echo = FALSE}
+```{r, eval=FALSE}
 G <- sample_ppm(100, 0.9, 10, 3, directed = TRUE, loops = TRUE)
 
-model <- dcsbm(G, n.sweeps = 1)
+model <- dcsbm(G, n.sweeps = 1, verbose = FALSE)
  
 plot(G, vertex.color = model$best_partition, vertex.label = NA)
 ```
@@ -78,7 +78,7 @@ plot(G, vertex.color = model$best_partition, vertex.label = NA)
 
 #### 1. MCMC sweeps
 
-```{r, eval = FALSE, echo = FALSE}
+```{r, eval=FALSE}
 # Initialize graph and a random starting partition
 G <- sample_dcppm(100, 0.9, 10, 3, k_coef = 2, directed = TRUE, loops = TRUE)
 
@@ -95,10 +95,10 @@ plot(G, vertex.color = result$best_partition, vertex.label = NA)
 
 #### 2. Agglomerative merge
 
-```{r, eval = FALSE, echo = FALSE}
+```{r, eval=FALSE}
 G <- sample_dcppm(100, 0.9, 10, 3, k_coef = 2, directed = TRUE, loops = TRUE)
 
-model <- dcsbm(G, degree_correction = TRUE, n.sweeps = 5)
+model <- dcsbm(G, degree_correction = TRUE, n.sweeps = 5, verbose = FALSE)
  
 plot(G, vertex.color = model$best_partition, vertex.label = NA, sub = "Best partition")
 plot(G, vertex.color = c(rep(1,34), rep(2,33), rep(3,33)), vertex.label = NA, sub = "True partition")
