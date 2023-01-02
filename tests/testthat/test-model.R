@@ -17,6 +17,11 @@ test_that("Agglomerative merging works", {
   expect_error(m <- dcsbm(g3, n.moves = 1, n.sweeps = 1, verbose = FALSE), NA)
 })
 
+test_that("Model output is not missing transmission probs", {
+  g1 <- make_full_graph(4)
+  m1 <- dcsbm(g1, verbose = FALSE)
+  expect_equal(m1$block_transmission_probs, matrix(1))
+})
 
 test_that("Can create block sequences", {
   bs1 <- block_sequence(5)

@@ -175,7 +175,7 @@ dcsbm <- function (graph, degree_correction = FALSE, n.blocks = c(1, Inf),
 
   transmission_probs <- get_transmission_probs(graph, best_partition)
 
-  list("block_transmission_probs" = NULL, "B_opt" = best_number_of_blocks,
+  list("block_transmission_probs" = transmission_probs, "B_opt" = best_number_of_blocks,
        "minimum_description_length" = minimum_dl, "best_partition" = best_partition,
        "degree_parameters" = degree_parameters,
        "iterations" = collapse_iterations)
