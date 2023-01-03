@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   benchmarks: benchmarks.html
   introduction: introduction.html
-last_built: 2023-01-03T09:10Z
+last_built: 2023-01-03T09:14Z
 urls:
   reference: https://mpff.github.io/dcsbm/reference
   article: https://mpff.github.io/dcsbm/articles
