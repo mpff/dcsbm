@@ -53,4 +53,5 @@ summary(m)
 
 # Plot the resulting partition.
 plot(g, vertex.color = m$best_partition, vertex.label = NA, sub = "Estimated partition")
+
 ```

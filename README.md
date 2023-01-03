@@ -34,15 +34,6 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(dcsbm)
-#> Lade nötiges Paket: igraph
-#> 
-#> Attache Paket: 'igraph'
-#> Die folgenden Objekte sind maskiert von 'package:stats':
-#> 
-#>     decompose, spectrum
-#> Das folgende Objekt ist maskiert 'package:base':
-#> 
-#>     union
 
 # Generate graph by a planted partition model and estimate a degree-corrected SBM.
 g <- sample_dcppm(60, c=0.9, k=10, B=3, k_coef=1.5, directed=TRUE, loops=TRUE)
@@ -50,7 +41,7 @@ m <- dcsbm(g, degree_correction=TRUE, n.sweeps=5, verbose=FALSE)
 
 # Show model summary.
 summary(m)
-#> IGRAPH 3ec2aef D--- 60 1200 -- Planted partition model with degree variability
+#> IGRAPH a18e3fd D--- 60 1200 -- Planted partition model with degree variability
 #> + attr: name (g/c), loops (g/l)
 #> 
 #> Degree correction: two way
