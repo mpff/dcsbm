@@ -41,10 +41,12 @@ m <- dcsbm(g, degree_correction=TRUE, n.sweeps=5, verbose=FALSE)
 
 # Show model summary.
 summary(m)
-#> IGRAPH 62c9c14 D--- 60 1200 -- Planted partition model with degree variability
+#> Graph:
+#> IGRAPH 12f5793 D--- 60 1200 -- Planted partition model with degree variability
 #> + attr: name (g/c), loops (g/l)
 #> 
-#> Degree correction: two way
+#> Model:
+#> SBM with degree correction
 #> Optimal number of blocks: 3 
 #> 
 #> Block transmission probabilities:
