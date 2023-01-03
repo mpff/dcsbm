@@ -5,11 +5,11 @@
 
 <!-- badges: start -->
 
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R-CMD-check](https://github.com/mpff/dcsbm/workflows/R-CMD-check/badge.svg)](https://github.com/mpff/dcsbm/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/mpff/dcsbm/branch/main/graph/badge.svg)](https://app.codecov.io/gh/mpff/dcsbm?branch=main)
-[![R-CMD-check](https://github.com/mpff/dcsbm/workflows/R-CMD-check/badge.svg)](https://github.com/mpff/dcsbm/actions)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 The goal of dcsbm is to provide methods for estimating a two-way degree
@@ -41,7 +41,7 @@ m <- dcsbm(g, degree_correction=TRUE, n.sweeps=5, verbose=FALSE)
 
 # Show model summary.
 summary(m)
-#> IGRAPH 19d97a5 D--- 60 1200 -- Planted partition model with degree variability
+#> IGRAPH 62c9c14 D--- 60 1200 -- Planted partition model with degree variability
 #> + attr: name (g/c), loops (g/l)
 #> 
 #> Degree correction: two way

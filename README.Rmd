@@ -17,9 +17,9 @@ set.seed(2022)
 # dcsbm
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![Codecov test coverage](https://codecov.io/gh/mpff/dcsbm/branch/main/graph/badge.svg)](https://app.codecov.io/gh/mpff/dcsbm?branch=main)
 [![R-CMD-check](https://github.com/mpff/dcsbm/workflows/R-CMD-check/badge.svg)](https://github.com/mpff/dcsbm/actions)
+[![Codecov test coverage](https://codecov.io/gh/mpff/dcsbm/branch/main/graph/badge.svg)](https://app.codecov.io/gh/mpff/dcsbm?branch=main)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 The goal of dcsbm is to provide methods for estimating a two-way degree corrected stochastic block model for directed, weighted graphs. 
