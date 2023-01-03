@@ -180,13 +180,21 @@ dcsbm <- function (graph, degree_correction = FALSE, n.blocks = c(1, Inf),
        "degree_parameters" = degree_parameters,
        "iterations" = collapse_iterations, "graph" = graph)
 
+  attr(output, "degree correction") <- degree_correction
+  attr(output, "n.blocks") <- c(1, Inf)
+  attr(output, "n.moves") <- 10
+  attr(output, "n.sweeps") <- 0
   structure(output, class = "dcsbm")
 }
 
 #' @export
 print.dcsbm <- function(x, ...) {
-  cat("Degree correction:")
-  if(length(x$degree_parameters) == 2) cat(" two way\n") else cat(" one way\n")
+  cat("Model:\n")
+  if(attr(x, "degree correction")){
+    cat("SBM with degree correction\n")
+  } else {
+    cat("SBM without degree correction\n")
+  }
   cat("Optimal number of blocks:", x$B_opt, "\n")
   cat("\n")
   cat("Minimum Description Length (MDL) =", x$minimum_description_length)
@@ -197,10 +205,14 @@ print.dcsbm <- function(x, ...) {
 #' @export
 summary.dcsbm <- function(object, ...) {
   x <- object
+  cat("Graph:\n")
   summary(x$graph)
-  cat("\n")
-  cat("Degree correction:")
-  if(length(x$degree_parameters) == 2) cat(" two way\n") else cat(" one way\n")
+  cat("\nModel:\n")
+  if(attr(x, "degree correction")){
+    cat("SBM with degree correction\n")
+  } else {
+    cat("SBM without degree correction\n")
+  }
   cat("Optimal number of blocks:", x$B_opt, "\n")
   cat("\n")
   cat("Block transmission probabilities:\n")
