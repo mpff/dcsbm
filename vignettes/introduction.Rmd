@@ -32,11 +32,11 @@ library(dcsbm)
 We can simulate a network with a clear block structure using the planted partition model via `sample_ppm`. And then estimate a SBM using the `dcsbm` function.
 
 ```{r}
-G <- sample_ppm(100, 0.9, 10, 3, directed = TRUE, loops = TRUE)
+G <- sample_ppm(60, 0.9, 5, 3, directed = TRUE, loops = TRUE)
 
 model <- dcsbm(G, n.sweeps = 1, verbose = FALSE)
  
-plot(G, vertex.color = model$best_partition, vertex.label = NA)
+plot(G, vertex.color = model$best_partition, vertex.label = NA, sub = "Estimated partition")
 ```
 
 
@@ -45,10 +45,10 @@ plot(G, vertex.color = model$best_partition, vertex.label = NA)
 We can simulate a planted partition network with additional degree variability inside each block via `sample_dcppm`. And then estimate a degree corrected SBM by using `dcsbm` and setting `degree_correction = TRUE`.
 
 ```{r}
-G <- sample_dcppm(100, 0.9, 10, 3, k_coef = 2, directed = TRUE, loops = TRUE)
+G <- sample_dcppm(60, 0.9, 5, 3, k_coef = 2, directed = TRUE, loops = TRUE)
 
 model <- dcsbm(G, degree_correction = TRUE, n.sweeps = 5, verbose = FALSE)
  
-plot(G, vertex.color = model$best_partition, vertex.label = NA, sub = "Best partition")
-plot(G, vertex.color = c(rep(1,34), rep(2,33), rep(3,33)), vertex.label = NA, sub = "True partition")
+plot(G, vertex.color = model$best_partition, vertex.label = NA, sub = "Estimated partition")
+plot(G, vertex.color = c(rep(1,20), rep(2,20), rep(3,20)), vertex.label = NA, sub = "True partition")
 ```
